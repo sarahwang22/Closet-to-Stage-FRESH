@@ -25,27 +25,32 @@ class ItemPageBase extends Component{
         }
     }
     componentDidMount(){
-        this.props.firebase.items().on("value", snapshot=> { //stick to either arrow functions or function() ortherwise run-time will be messed up
-            const itemsObject = snapshot.val();
+        const itemsRef = this.props.firebase.items()
+        const snapshot = itemsRef.get()
+        
+        console.log(snapshot)
 
-            if(itemsObject){ //!!!DONT FORGET to always check NULL
-                const itemsList = Object.keys(itemsObject).map(key => ({
-                    ...itemsObject[key], //what does the spread operator do?
-                    itemId: key,
-                }))
+        // this.props.firebase.items().on("value", snapshot=> { //stick to either arrow functions or function() ortherwise run-time will be messed up
+        //     const itemsObject = snapshot.val();
 
-                this.setState({
-                    items: itemsList,
-                })
-            } 
-            else {
-                this.setState({items: null}) //??? need
-            } 
-        })
+        //     if(itemsObject){ //!!!DONT FORGET to always check NULL
+        //         const itemsList = Object.keys(itemsObject).map(key => ({
+        //             ...itemsObject[key], //what does the spread operator do?
+        //             itemId: key,
+        //         }))
+
+        //         this.setState({
+        //             items: itemsList,
+        //         })
+        //     } 
+        //     else {
+        //         this.setState({items: null}) //??? need
+        //     } 
+        // })
     }
 
     componentWillUnmount() {
-        this.props.firebase.users().off();
+        //this.props.firebase.users().unsub();
     }
     onChange = event =>{
         this.setState({
@@ -95,7 +100,7 @@ class ItemPageBase extends Component{
 }
 
 const ItemsList = ({items}) =>(
-    <div class="itemslist">
+    <div className="itemslist"> {/*className vs class is React convention*/}
         <ul>
             {items.map(item=>( //map uses ()
                 <Item item={item}/>
@@ -107,7 +112,7 @@ const ItemsList = ({items}) =>(
 
 const Item=({item})=>{
     return(
-        <div class="item">
+        <div className="item">
             <span > 
                 {item.itemId} {/* just to show how to get the ID */}
                 <strong>{item.itemName}, {item.color} </strong>

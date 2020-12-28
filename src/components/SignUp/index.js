@@ -55,7 +55,7 @@ class SignUpFormBase extends Component {
                         username,
                         email,
                         roles,
-                    })
+                    }, {merge: true})
             })
             .then(()=>{
                 this.setState({...INITIAL_STATE})
@@ -80,7 +80,6 @@ class SignUpFormBase extends Component {
     onChangeCheckbox = event =>{
         console.log(this.state)
         this.setState({[event.target.name]: event.target.checked})
-        console.log(this.state)
     }
 
     render() {

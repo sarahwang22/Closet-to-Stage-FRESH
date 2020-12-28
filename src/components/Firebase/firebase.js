@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'; //what's the diff btwn this and 'app'
 import 'firebase/auth' //is this right? they used this.auth instead
-import 'firebase/database'
+import 'firebase/firestore'
 
 
 //console.log(process.env.REACT_APP_API_KEY) //restart local program to see env changes
@@ -22,7 +22,7 @@ const firebaseConfig = {
         firebase.initializeApp(firebaseConfig) //app.init
 
         this.auth = firebase.auth() //app.auth()
-        this.db = firebase.database() //app.database
+        this.db = firebase.firestore() //app.database
       }
       //*** Auth API ***
       doCreateUserWithEmailAndPassword = (email, password) =>
@@ -43,10 +43,10 @@ const firebaseConfig = {
           //**User API */
 
         user = uid =>
-            this.db.ref(`users/${uid}`)// ` denotes string literal ${} is how you put js in string literals
+            this.db.doc(`users/${uid}`)// ` denotes string literal ${} is how you put js in string literals
         //but wait, could you have said('users/'+uid)???
         users = () => 
-            this.db.ref('users')
+            this.db.collection('users')
 
         currentUser = () =>
             this.auth.currentUser;
@@ -54,30 +54,27 @@ const firebaseConfig = {
         //*Item API 
 
         item = uid =>
-            this.db.ref(`items/${uid}`)
+            this.db.doc(`items/${uid}`)
         
         items = () =>
-            this.db.ref('items') //creates a Ref
-        //dammit parenthsis, not curly quotes!!!
+            this.db.collection('items') //creates a Ref
+        //use parenthsis, not curly quotes for returning
         
         doAddItem = (itemName, color, uid) => {
-            var itemRef = this.db.ref('items/').push()
+           this.db.collection('items').add ({ itemName, color,})
 
-            itemRef.set({ itemName, color,})
+            //var itemKey = itemRef.key //ref can refer to a push(), but not push().set()
+            //console.log("item key "+itemKey)
 
-            var itemKey = itemRef.key //ref can refer to a push(), but not push().set()
-
-            console.log("item key "+itemKey)
-
-            this.db.ref('users/' + uid +'/items').update({ //.set() sets, update adds
-                [itemKey]: true
+            this.db.collection('users/' + uid +'/items').add({ //.set() sets, update adds
+                itemName,
+                color,
             })  
         }
 
         /*Account API */
 
         getUserItems = () => {
-
             return(
                 <div></div>
             )
@@ -85,31 +82,33 @@ const firebaseConfig = {
 
         //*** Merge Auth and DB User Api */
 
-        onAuthUserListener = (next, fallback) => {
-            this.auth.onAuthStateChanged(authUser => { //where does authUser come from ???
-                if(authUser) {
-                    this.user(authUser.uid)
-                        .once('value')
-                        .then(snapshot => {
-                            const dbUser = snapshot.val()
+        onAuthUserListener = (next, fallback) => { //can this be turned into a promise?
+            this.auth.onAuthStateChanged(authUser => { //onAuthStateChanged accepts a user
+                if(authUser) { //user is signed in
+                    const promise = this.user(authUser.uid).get() //returns Promise<QuerySnapshot>
+                    
+                    promise.then(snapshot => { //could also get rid of 'promise' and go directly to '.then'
+                        const dbUser = snapshot.data()
+                        const roles = dbUser.roles
 
-                            //default empty roles
-                            if (!dbUser.roles){
-                                dbUser.roles = {}
-                            }
+                        if(!roles){
+                            dbUser.roles= {}
+                        }
 
+                        //do you really need to merge? test later
+                        authUser = {
+                            uid: authUser.uid,
+                            email: authUser.email,
+                            ...dbUser
+                        }
 
+                        console.log(dbUser)
+                        console.log(authUser)
 
-                            //merge auth and db user, ??? but wait why do we need to do this if it adds it to the db anyway?
-                            authUser = {
-                                uid: authUser.uid,
-                                email: authUser.email,
-                                ...dbUser,
-                            }
+                    })
+                    next(authUser)
 
-                            next(authUser)
-                        })
-                } else {
+                } else { //user is not authenticated/ authorized
                     fallback();
                 }
             })

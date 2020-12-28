@@ -15,18 +15,18 @@ const withAuthentication = Component =>{
         
           componentDidMount () { 
             this.listener = this.props.firebase.onAuthUserListener(
-              authUser=>{
-                this.setState({authUser})
+              authUser =>{ //arbitrary 'authUser' defined in firebase.js
+                this.setState({authUser}) 
               },
               ()=>{
-                this.setState({authUser: null})
+                this.setState({authUser: null}) //arrow functions used to set 'this' properly
               }
             )//listener is triggered every time data changes !!! OH
               
           }
         
           componentWillUnmount () {
-            this.props.firebase.user().off(); //I don't understand listeners !!! ???why this/props (below) huh wait this works
+            //this.props.firebase.user().off(); //I don't understand listeners !!! ???why this/props (below) huh wait this works
           }
         render(){
             return(

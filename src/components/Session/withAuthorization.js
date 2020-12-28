@@ -24,8 +24,7 @@ const withAuthorization = condition => Component => { //??? why would this need 
         }
 
         componentWillUnmount(){
-            
-            this.props.firebase.user().off(); //!!! needs a fixing
+            //this.props.firebase.user().off(); //!!! needs a fixing
         }
 
         render(){
