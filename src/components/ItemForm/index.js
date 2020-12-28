@@ -23,29 +23,14 @@ class Form extends Component {
     }) 
   }
 
-  // writeItemData(itemId, item, color){
-  //   this.props.firebase.database().ref('items/'+itemId).set({
-  //     item: item,
-  //     color: color,
-  //   })
-  // }
   onSumbit = event =>{
     const {item, color} = this.state
 
-    //const authUser = this.props.authUser
+    const cuid = this.props.firebase.currentUser().uid
 
+    this.props.firebase.doAddItem(item, color, cuid)
 
-    this.props.firebase.doAddItem(item, color)
-      // .catch(error=>{
-      //   this.setState({error})
-      // })
-      // .then(()=>{
-      //   this.setState({...INITIAL_STATE})
-      // })
-      // .catch(error=>{
-      //   this.setState({error});
-      // }) do you need any catches?
-      
+    this.setState({INITIAL_STATE})
   
     event.preventDefault()
   }

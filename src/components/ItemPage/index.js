@@ -39,7 +39,7 @@ class ItemPageBase extends Component{
                 })
             } 
             else {
-                //this.setState({items: null})
+                this.setState({items: null}) //??? need
             } 
         })
     }
@@ -56,23 +56,6 @@ class ItemPageBase extends Component{
     onSubmit= event =>{
         const {item, color} = this.state
 
-        /*var newRef = this.props.firebase.items().push()
-        newRef.set({
-            itemName: item,
-            color: color,
-        })
-        var newID = newRef.key
-
-        var cuid = this.props.firebase.currentUser().uid
-
-        console.log(cuid)
-
-        this.props.firebase.user(cuid).push().set({
-            [newID]: true
-        })
-            */
-        //const currentUser = this.props.firebase.currentUser()
-        //console.log(currentUser)
         var cuid = this.props.firebase.currentUser().uid
 
         this.props.firebase.doAddItem(item, color, cuid)

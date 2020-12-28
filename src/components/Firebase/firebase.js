@@ -1,11 +1,10 @@
-import app from 'firebase/app';
+import firebase from 'firebase/app'; //what's the diff btwn this and 'app'
 import 'firebase/auth' //is this right? they used this.auth instead
 import 'firebase/database'
 
 
 //console.log(process.env.REACT_APP_API_KEY) //restart local program to see env changes
 
-console.log(process.env)
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -20,10 +19,10 @@ const firebaseConfig = {
   
   class Firebase {
       constructor(){
-        app.initializeApp(firebaseConfig)
+        firebase.initializeApp(firebaseConfig) //app.init
 
-        this.auth = app.auth()
-        this.db = app.database()
+        this.auth = firebase.auth() //app.auth()
+        this.db = firebase.database() //app.database
       }
       //*** Auth API ***
       doCreateUserWithEmailAndPassword = (email, password) =>
@@ -57,7 +56,6 @@ const firebaseConfig = {
         item = uid =>
             this.db.ref(`items/${uid}`)
         
-
         items = () =>
             this.db.ref('items') //creates a Ref
         //dammit parenthsis, not curly quotes!!!
@@ -73,8 +71,16 @@ const firebaseConfig = {
 
             this.db.ref('users/' + uid +'/items').update({ //.set() sets, update adds
                 [itemKey]: true
-            })
-            
+            })  
+        }
+
+        /*Account API */
+
+        getUserItems = () => {
+
+            return(
+                <div></div>
+            )
         }
 
         //*** Merge Auth and DB User Api */

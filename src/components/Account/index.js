@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component } from 'react';
 import {compose} from 'recompose'
 
 import { withFirebase } from '../Firebase';
 import {withAuthorization} from '../Session'
-import * as ROLES from '../../constants/roles'
+//import * as ROLES from '../../constants/roles'
 import PasswordChangeForm from '../PasswordChange'
  
 class AccountPage extends Component {
@@ -13,7 +13,7 @@ class AccountPage extends Component {
     this.state = {
       user: {},
       loading: false,
-      items: [],
+      userItems: [],
     };
   }
  
@@ -28,23 +28,39 @@ class AccountPage extends Component {
         
         this.props.firebase.user(cuid).on("value", snapshot => {
             const userObject = snapshot.val();
-            console.log(userObject)
+            
+            const userObjectItems = userObject["items"]
+            /*console.log(items)
+            console.log(Object.keys(userObjectItems))*/
 
-            this.setState({user: userObject, loading: false})
+
+            if(userObjectItems){
+              const allItemsRef = this.props.firebase.items()
+
+              allItemsRef.on('value', snapshot =>{
+                const allItemsObject = snapshot.val()
+
+                const itemsList = Object.keys(userObjectItems).map((itemID)=>({
+                    ...allItemsObject[itemID],
+                    itemID: itemID
+                }))
+
+                this.setState({userItems: itemsList})
+                console.log(this.state.userItems)
+
+              })
+            }
+            this.setState({user: userObject, loading: false, })
         }
         )
-
-        //this.props.firebase.database().ref('users') error
     }
-    
-
   }
  
   componentWillUnmount() {
-      this.props.firebase.user().off()//removes the listener???
+      this.props.firebase.users().off()//removes the listener??? or user().off()
   }
   render() {
-      const { user, loading } = this.state
+      const { user, loading, userItems } = this.state
 
     return (
       <div>
@@ -55,6 +71,7 @@ class AccountPage extends Component {
         <PasswordChangeForm/>
         <User user={user} />
 
+        <ItemsList items = {userItems} />
 
       </div>
     );
@@ -76,9 +93,27 @@ const User = ({user}) => (
       </ul>
 
     </div>
-    
-
 )
+
+const ItemsList = (props) => {
+  console.log(props.items)
+
+  return (
+    <div>
+      <ul>
+        {props.items.map(item=> <li> <Item item={item}/> </li>)}
+      </ul>
+    </div>
+  )
+}
+
+const Item =  (props) =>{ //or use ({item}) instead of (props) and change accoridngly
+  return(
+    <div>
+      <p>itemName: {props.item.itemName}, color: {props.item.color} </p>
+    </div>
+  )
+}
  
 
 
