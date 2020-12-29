@@ -91,17 +91,21 @@ const firebaseConfig = {
                     promise.then(snapshot => { //could also get rid of 'promise' and go directly to '.then'
                         const dbUser = snapshot.data()
                         const roles = dbUser.roles
+                        console.log({roles})
+
 
                         if(!roles){
                             dbUser.roles= {}
                         }
 
-                        //do you really need to merge? test later
+                        //do you really need to merge? yes, because withAuthorization needs to find 'roles' in the authUser
                         authUser = {
                             uid: authUser.uid,
                             email: authUser.email,
                             ...dbUser
                         }
+                        
+                        console.log(authUser)
 
                         //console.log(dbUser)
                         //console.log(authUser)

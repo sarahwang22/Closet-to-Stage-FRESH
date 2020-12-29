@@ -34,7 +34,6 @@ class SignUpFormBase extends Component {
     
     constructor(props){
         super(props)
-
         this.state = {...INITIAL_STATE}
     }
 
@@ -44,6 +43,9 @@ class SignUpFormBase extends Component {
 
         if(isAdmin){
             roles[ROLES.ADMIN] = ROLES.ADMIN
+        }
+        else{
+            roles[ROLES.ADMIN] = null
         }
 
         this.props.firebase

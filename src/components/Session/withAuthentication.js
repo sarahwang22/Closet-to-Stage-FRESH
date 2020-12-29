@@ -14,7 +14,7 @@ const withAuthentication = Component =>{
           }
         
           componentDidMount () { 
-            this.listener = this.props.firebase.onAuthUserListener(
+            this.props.firebase.onAuthUserListener(
               authUser =>{ //arbitrary 'authUser' defined in firebase.js
                 this.setState({authUser}) 
               },
@@ -26,7 +26,7 @@ const withAuthentication = Component =>{
           }
         
           componentWillUnmount () {
-            //this.props.firebase.user().off(); //I don't understand listeners !!! ???why this/props (below) huh wait this works
+            //this.props.firebase.user().off(); //detatches callback
           }
         render(){
             return(

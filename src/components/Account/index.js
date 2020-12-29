@@ -90,7 +90,7 @@ class AccountPage extends Component {
   }
   render() {
       const { user, loading, userItems } = this.state
-
+      console.log(userItems)
     return (
       <div>
         <h1>Account</h1>
@@ -137,9 +137,10 @@ const ItemsList = (props) => {
 }
 
 const Item =  (props) =>{ //or use ({item}) instead of (props) and change accoridngly
-  return(
+  //console.log(props.item)
+return(
     <div className="item">
-      <strong>itemName: {props.item.itemName}, color: {props.item.color} </strong>
+      <strong>itemName: {props.item.item.itemName}, color: {props.item.item.color} </strong>
     </div>
   )
 }

@@ -16,33 +16,53 @@ class AdminPage extends Component {
   }
  
   componentDidMount() {
+
     this.setState({ loading: true });
- 
-    this.props.firebase.users().on('value', snapshot => {
-        const usersObject = snapshot.val() //usersObject is an Object
-        
-        //console.log(usersObject)
+    
 
-        const usersList = Object.keys(usersObject).map(key=>({ //puts all of the users in an array ({John:, Mary:, ...})
-            ...usersObject[key],// usersObject[John]
-            uid: key,
-        }))
+    this.unsubscribe = this.props.firebase.users()
+      .onSnapshot(snapshot => { //use this.onSnapshot for instant changes (get() makes you log back in and out for changes)
+        let users = []
 
-       //console.log(usersList)
+        snapshot.forEach(doc=>{
+            users.push({uid: doc.id, ...doc.data()})
+      })
 
-        this.setState({
-            users: usersList,
-            loading: false,
-        });
+      this.setState({
+        users,
+        loading: false,
+      })
+    })
+    //console.log(this.state.users) //come back to fix usersList => users
 
-    });
+    
+
+    
+    console.log(ROLES.ADMIN) //it's clearly defined...
+
+    /* this.props.firebase.users().on('value', snapshot => {
+      const usersObject = snapshot.val() //usersObject is an Object
+      console.log(usersObject)
+
+      const usersList = Object.keys(usersObject).map(key=>({ //puts all of the users in an array ({John:, Mary:, ...})
+          ...usersObject[key],// usersObject[John]
+          uid: key,
+      }))
+      //console.log(usersList)
+      this.setState({
+          users: usersList,
+          loading: false,
+      })
+    }) */
   }
  
   componentWillUnmount() {
-      this.props.firebase.user().off()//removes the listener???
+      this.unsubscribe()
+      //this.props.firebase.user().off()//"not a function"
   }
   render() {
       const { users, loading } = this.state
+      console.log(users)
 
     return (
       <div>
@@ -57,27 +77,34 @@ class AdminPage extends Component {
   }
 }
 
-const UserList = ({users}) => ( 
-    //completely don't understand ???
+const UserList = ({users}) => {
+
+  return ( 
     <ul>
-        {users.map(user=> (
-            <li key={user.uid}>
-                <span>
-                    <strong>ID:</strong> {user.uid}
-                </span>
-                <span>
-                    <strong> E-mail:</strong> {user.email}
-                </span>
-                <span>
-                    <strong> Username:</strong> {user.username}
-                </span>
-            </li>     
-        ))}
-    </ul>
+    {users.map(user=>{
+      console.log(user.username)
+      return(
+        <li key={user.uid}>
+          {user.uid}: {user.username}, {user.email}
+        </li>
+      )
+      
+    }
+        
+    )}
+  </ul>
+  )
+}
+  
+    
+
+const condition = authUser => (
+  authUser && authUser //needs fixing
 )
- 
-const condition = authUser =>
-  authUser && !!authUser.roles[ROLES.ADMIN]
+  
+  
+
+  
 
 export default compose(
   withAuthorization(condition),
