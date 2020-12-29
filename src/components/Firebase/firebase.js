@@ -51,6 +51,8 @@ const firebaseConfig = {
         currentUser = () =>
             this.auth.currentUser;
 
+        userItems = (uid) => 
+            this.db.collection('users').doc(uid).collection('items')
         //*Item API 
 
         item = uid =>
@@ -60,15 +62,14 @@ const firebaseConfig = {
             this.db.collection('items') //creates a Ref
         //use parenthsis, not curly quotes for returning
         
-        doAddItem = (itemName, color, uid) => {
-           this.db.collection('items').add ({ itemName, color,})
+        doAddItem = (item, uid) => {
+           this.db.collection('items').add ({item})
 
             //var itemKey = itemRef.key //ref can refer to a push(), but not push().set()
             //console.log("item key "+itemKey)
 
-            this.db.collection('users/' + uid +'/items').add({ //.set() sets, update adds
-                itemName,
-                color,
+            this.db.collection('users/' + uid +'/items').add({ 
+                item,
             })  
         }
 
@@ -102,19 +103,19 @@ const firebaseConfig = {
                             ...dbUser
                         }
 
-                        console.log(dbUser)
-                        console.log(authUser)
+                        //console.log(dbUser)
+                        //console.log(authUser)
 
                     })
                     next(authUser)
 
-                } else { //user is not authenticated/ authorized
+                } else { //user is not authenticated/authorized
                     fallback();
                 }
             })
         }
 
-        //*Get User profile */
+        //*Get Current User */
 
         currentUser = () =>(
             this.auth.currentUser

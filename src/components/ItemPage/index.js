@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 
 import {withFirebase} from '../Firebase'
-import { AuthUserContext, withAuthorization } from '../Session'
+//import { AuthUserContext, withAuthorization } from '../Session'
 
 import "./itempage.css"
 
@@ -24,11 +24,21 @@ class ItemPageBase extends Component{
             error: null,
         }
     }
-    componentDidMount(){
-        const itemsRef = this.props.firebase.items()
-        const snapshot = itemsRef.get()
-        
-        console.log(snapshot)
+    componentDidMount(){ //work on uploading only a few items to each page
+          this.unsubscribe = this.props.firebase.items() // this. referes to element it's called upon
+            .onSnapshot(snapshot => {
+                let itemsList = [];
+
+                snapshot.forEach(doc => {
+                    console.log(doc.id, '=>',doc.data())
+                    itemsList.push({itemID:doc.id, ...doc.data()})
+                    console.log(itemsList)
+                })
+
+                this.setState({
+                    items: itemsList,
+                })
+            })
 
         // this.props.firebase.items().on("value", snapshot=> { //stick to either arrow functions or function() ortherwise run-time will be messed up
         //     const itemsObject = snapshot.val();
@@ -38,7 +48,6 @@ class ItemPageBase extends Component{
         //             ...itemsObject[key], //what does the spread operator do?
         //             itemId: key,
         //         }))
-
         //         this.setState({
         //             items: itemsList,
         //         })
@@ -50,6 +59,7 @@ class ItemPageBase extends Component{
     }
 
     componentWillUnmount() {
+        this.unsubscribe();
         //this.props.firebase.users().unsub();
     }
     onChange = event =>{
@@ -62,11 +72,9 @@ class ItemPageBase extends Component{
         const {item, color} = this.state
 
         var cuid = this.props.firebase.currentUser().uid
-
         this.props.firebase.doAddItem(item, color, cuid)
 
         this.setState({item:"",color:"",})//makes the inputs clear  
-
         event.preventDefault()//??? but the other way doens't work edit: () when {} return statemnt in firebase apis
 
     }
@@ -115,7 +123,7 @@ const Item=({item})=>{
         <div className="item">
             <span > 
                 {item.itemId} {/* just to show how to get the ID */}
-                <strong>{item.itemName}, {item.color} </strong>
+                <strong>itemName: {item.itemName}, color: {item.color} </strong>
             </span>
             
         </div>

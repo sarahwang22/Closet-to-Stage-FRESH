@@ -32,6 +32,7 @@ const App = () => (
       <Route exact path={ROUTES.ACCOUNT} component={AccountPage} />
       <Route exact path={ROUTES.ADMIN} component={AdminPage} />
       <Route exact path={ROUTES.ITEM_PAGE} component={ItemPage} />
+      <Route exact path="/itemform" component = {Form} />
     </div>
   </Router>
 );

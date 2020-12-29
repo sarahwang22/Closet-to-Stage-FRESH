@@ -22,17 +22,45 @@ class AccountPage extends Component {
 
     var cuser = this.props.firebase.currentUser()
 
-    if(cuser != null){
+    if(cuser != null){ //but do you really need this? because account can only be accessed by auth users
         var cuid = cuser.uid;
         //console.log(cuid)
         
-        this.props.firebase.user(cuid).on("value", snapshot => {
+        this.unsubscribe = this.props.firebase.user(cuid)
+          .onSnapshot(snapshot => { //or change back to .get
+            if(snapshot){//need???
+              this.setState({
+                user: snapshot.data(),
+                loading: false
+              })
+              console.log(this.state.user)
+            }  
+          })
+          
+          this.props.firebase.user(cuid) //how to get data once
+            .get()
+            .then(doc=>{
+              console.log(doc.data())
+            })
+
+            this.props.firebase.userItems(cuid) //collection, not a doc
+              .get()
+              .then(snapshot=>{
+                let userItems =[]
+
+                snapshot.forEach(doc => {
+                  userItems.push({itemID: doc.id, ...doc.data()})
+                })
+                
+                console.log(userItems)
+
+                this.setState({userItems})
+              })
+
+        /* this.props.firebase.user(cuid).on("value", snapshot => {
             const userObject = snapshot.val();
             
             const userObjectItems = userObject["items"]
-            /*console.log(items)
-            console.log(Object.keys(userObjectItems))*/
-
 
             if(userObjectItems){
               const allItemsRef = this.props.firebase.items()
@@ -52,12 +80,13 @@ class AccountPage extends Component {
             }
             this.setState({user: userObject, loading: false, })
         }
-        )
+        ) */
     }
   }
  
   componentWillUnmount() {
-      this.props.firebase.users().off()//removes the listener??? or user().off()
+      this.unsubscribe()
+      //this.props.firebase.users().off()//removes the listener??? or user().off()
   }
   render() {
       const { user, loading, userItems } = this.state
@@ -84,10 +113,10 @@ const User = ({user}) => (
       <ul>   
           <li >
               <span>
-                  <p>Email:</p>{user.email}
+                  <p>Email: {user.email}</p>
               </span>
               <span>
-                  <p> username:</p>{user.username}
+                  <p> username: {user.username}</p>
               </span>
           </li>     
       </ul>
@@ -99,7 +128,7 @@ const ItemsList = (props) => {
   console.log(props.items)
 
   return (
-    <div>
+    <div className="itemslist">
       <ul>
         {props.items.map(item=> <li> <Item item={item}/> </li>)}
       </ul>
@@ -109,8 +138,8 @@ const ItemsList = (props) => {
 
 const Item =  (props) =>{ //or use ({item}) instead of (props) and change accoridngly
   return(
-    <div>
-      <p>itemName: {props.item.itemName}, color: {props.item.color} </p>
+    <div className="item">
+      <strong>itemName: {props.item.itemName}, color: {props.item.color} </strong>
     </div>
   )
 }
