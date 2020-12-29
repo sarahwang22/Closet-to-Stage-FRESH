@@ -18,9 +18,7 @@ class ItemPageBase extends Component{
         super(props)
         this.state={
             loading: false,
-            items:[], //the list of items
-            item:"", //the one in the input
-            color:"",
+            itemsList:[], //the list of items
             error: null,
         }
     }
@@ -36,7 +34,7 @@ class ItemPageBase extends Component{
                 })
 
                 this.setState({
-                    items: itemsList,
+                    itemsList,
                 })
             })
 
@@ -62,46 +60,13 @@ class ItemPageBase extends Component{
         this.unsubscribe();
         //this.props.firebase.users().unsub();
     }
-    onChange = event =>{
-        this.setState({
-            [event.target.name]:event.target.value
-        })
-    }
 
-    onSubmit= event =>{
-        const {item, color} = this.state
-
-        var cuid = this.props.firebase.currentUser().uid
-        this.props.firebase.doAddItem(item, color, cuid)
-
-        this.setState({item:"",color:"",})//makes the inputs clear  
-        event.preventDefault()//??? but the other way doens't work edit: () when {} return statemnt in firebase apis
-
-    }
     render(){
-        const {item, color, items, error} = this.state
+        const {itemsList} = this.state
         return(
             <div>
                 {/*loading status, make sure to change componentdidmount too*/}
-                <form onSubmit={this.onSubmit}>
-                    <input
-                    name="item"
-                    value={item}
-                    type="text"
-                    onChange={this.onChange}
-                    placeholder="item"
-                    />
-                    <input
-                    name="color"
-                    value={color}
-                    type="text"
-                    onChange={this.onChange}
-                    placeholder="color"
-                    />
-                    <button type="submit">Add Item</button>
-                </form>
-                <p>{error && `${error}`}</p>
-                {<ItemsList items = {items}/>}
+                <ItemsList items = {itemsList}/>
             </div>
         )
     }
@@ -122,8 +87,8 @@ const Item=({item})=>{
     return(
         <div className="item">
             <span > 
-                {item.itemId} {/* just to show how to get the ID */}
-                <strong>itemName: {item.itemName}, color: {item.color} </strong>
+                {item.item.itemId} {/* just to show how to get the ID */}
+                <strong>itemName: {item.item.itemName}, color: {item.item.color} </strong>
             </span>
             
         </div>

@@ -112,8 +112,9 @@ class Form extends Component {
         <button onClick={this.onClear}>
           Clear
         </button>
-        {error && `${error}`}
+        <p>{error && `${error}`}</p>
       </form>
+      
       )
   }
 }
