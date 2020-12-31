@@ -11,7 +11,6 @@ class AccountPage extends Component {
   constructor(props) {
     super(props);
  
-    
     this.state = {
       user: {},
       loading: false,
@@ -39,12 +38,34 @@ class AccountPage extends Component {
               //console.log(this.state.user)
             }  
           })
+
+          this.props.firebase.items().where('userID','==',cuid)
+            .onSnapshot(querySnapshot => {
+              let userItems = []
+              if(querySnapshot.empty){
+                console.log("No Items for this User")
+                return;
+              }
+
+              querySnapshot.forEach(doc => {
+                //doc.data() returns an object-- the full item
+                userItems.push({id: doc.id, ...doc.data()})
+                console.log(userItems)
+              })
+
+              this.setState({ //setting all of userItems to state to send to <ItemsList/>
+                userItems
+              })
+
+            })
+
+          //check if the snapshot is empty
           
-          this.props.firebase.user(cuid) //how to get data once
+          /* this.props.firebase.user(cuid) //how to get data once
             .get()
             .then(doc=>{
               //console.log(doc.data())
-            })
+            }) 
 
             this.props.firebase.userItems(cuid) //collection, not a doc
               .get()
@@ -55,10 +76,11 @@ class AccountPage extends Component {
                   userItems.push({itemID: doc.id, ...doc.data()})
                 })
                 
+                
                 //console.log(userItems)
 
                 this.setState({userItems})
-              })
+              }) */
 
         /* this.props.firebase.user(cuid).on("value", snapshot => {
             const userObject = snapshot.val();
@@ -92,7 +114,7 @@ class AccountPage extends Component {
       //this.props.firebase.users().off()//removes the listener??? or user().off()
   }
   render() {
-      const { user, loading, userItems } = this.state
+      const { user, loading, userItems } = this.state //passing userItems as a prop into ItemsList
  
     return (
       <div>
@@ -105,7 +127,7 @@ class AccountPage extends Component {
 
         <a href="/itemform"> Add Item</a>
 
-        <ItemsList items = {userItems} />
+        <ItemsList items = {userItems} /> 
 
       </div>
     );
@@ -128,24 +150,13 @@ const User = ({user}) => (
     </div>
 )
 
-const ItemsList = ({items}) => {
-  //console.log(items)
-
+const ItemsList = (props) => { //props: {items: [{item1}, {item2}, ...]}
+  
   return (
     <div className="itemslist">
       <ul>
-        {items.map(item=> <li key={item.itemID}> <ItemEdit item={item}/> </li>)} 
-        {/* ItemEdit recieves prop object that looks like
-        {
-          item: {
-            itemID: #,
-            item: {
-              description:,
-              color:,
-              etc.
-            }
-          }
-        } */}
+        {props.items.map(item=> <li key={item.id}> <ItemEdit item={item}/> </li>)} 
+        {/* id comes from userItems.push({id: doc.id, }) */}
       </ul>
     </div>
   )

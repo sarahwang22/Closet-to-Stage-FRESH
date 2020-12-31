@@ -6,8 +6,8 @@ import {withFirebase} from '../Firebase'
 import * as ROUTES from '../../constants/routes'
 import AuthUserContext from './context'
 
-const withAuthorization = condition => Component => { //??? why would this need to be curried? bc you asked for it 
-    class WithAuthorization extends React.Component { //syntax for classes is Name {}
+const withAuthorization = condition => Component => { //withAuthorization(condition){return anyfunction(Component){return }}
+    class WithAuthorization extends React.Component { 
         componentDidMount(){
             this.listener = this.props.firebase.onAuthUserListener(
                 authUser => {

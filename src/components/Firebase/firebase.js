@@ -5,7 +5,6 @@ import 'firebase/firestore'
 
 //console.log(process.env.REACT_APP_API_KEY) //restart local program to see env changes
 
-
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_API_KEY,
     authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -62,8 +61,14 @@ const firebaseConfig = {
             this.db.collection('items') //creates a Ref
         //use parenthsis, not curly quotes for returning
         
+        getAuth = () =>
+            this.auth
+
+        getDb = () =>
+            this.db
+
         doAddItem = (item) => {
-           this.db.collection('items').add (item)
+           this.db.collection('items').add(item)
 
             //var itemKey = itemRef.key //ref can refer to a push(), but not push().set()
             //console.log("item key "+itemKey)
@@ -74,8 +79,10 @@ const firebaseConfig = {
             })  */
         }
 
-        doEditItem = (item, uid) => {
-
+        doEditItem = (editItem, itemID) => { //editItem is an object {itenName: ,color: ,}
+          
+            this.db.collection('items').doc(itemID) //returns a promise tacken by .then()
+                .set(editItem, {merge: true})
         }
 
         /*Account API */
@@ -97,10 +104,9 @@ const firebaseConfig = {
                         const dbUser = snapshot.data()
 
                         if(dbUser.roles){
-                            var roles = dbUser.roles
+                            var roles = dbUser.roles //this bit causes trouble every time you delete a user from database, but not in authentication
                         }
                         //console.log({roles})
-
 
                         if(!roles){
                             dbUser.roles= {}

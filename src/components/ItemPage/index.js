@@ -73,10 +73,10 @@ class ItemPageBase extends Component{
     }
 }
 
-const ItemsList = ({items}) =>(
+const ItemsList = (props) =>(
     <div className="itemslist"> {/*className vs class is React convention*/}
         <ul>
-            {items.map(item=>( //map uses ()
+            {props.items.map(item=>( //map uses ()
                 <Item item={item}/>
             ))}
         </ul>
@@ -84,13 +84,14 @@ const ItemsList = ({items}) =>(
     </div>
 ) 
 
-const Item=({item})=>{
+const Item=(props)=>{
     //console.log(item.itemID)
 
     return(
         <div className="item">
-            <p>itemID: {item.itemID}</p> {/* {itemID: , item: {itemName: , color: ,}} */}
-            <strong>itemName: {item.item.itemName}, color: {item.item.color} </strong>
+            <p>itemID: {props.item.itemID}</p> {/* {itemName: , color: , itemID: ,} */}
+            <strong>itemName: {props.item.itemName}, color: {props.item.color} </strong>
+            <h5>userID: {props.item.userID}</h5>
         </div>
     )
 }

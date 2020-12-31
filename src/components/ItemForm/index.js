@@ -95,7 +95,7 @@ class Form extends Component {
           placeholder="quantity"
         />
         <br />
-        <label htmlFor="color">color: </label>
+        <label htmlFor = "color">color: </label>
         <input
           name="color"
           value={item.color}

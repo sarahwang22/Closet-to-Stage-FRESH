@@ -1,13 +1,16 @@
 import React, {Component} from 'react'
+import { compose } from 'recompose'
 
 import {withFirebase} from '../Firebase'
+import {withAuthorization} from '../Session'
+
 
 class ItemEditForm extends Component {
     constructor(props){
         super(props)
 
         this.state = {
-            item: props.item,
+            editItem: props.item,
             //initialItem: props.item,
         }
 
@@ -15,27 +18,33 @@ class ItemEditForm extends Component {
 
     onChange = event =>{
         this.setState({
-            item:{
-              ...this.state.item,
-              [event.target.name]:event.target.value
+            editItem:{
+              ...this.state.editItem, //merging all the old parts of item with the edited properties of editItem obj
+              [event.target.name]:event.target.value //name and value come from the form inputs
             } 
         }) 
         console.log(this.state)
     }
 
     onSubmit = event =>{
-        this.props.firebase.doEditItem()
+        const {editItem} = this.state
+        const itemID = editItem.id
+        //editItem is an object {id: , color: , ...}
+
+        this.props.firebase.doEditItem(editItem, itemID)
+        event.preventDefault()
     }
 
     render(){
-        console.log(this.state.item)
-        const {item,} = this.state
+        //console.log(this.state.editItem.id)
+        //console.log(this.props.firebase.getDb())
+        const {editItem} = this.state
 
         return(
             <form>
                  <input
                 name="itemName"
-                value={item.itemName}
+                value={editItem.itemName}
                 type="text"
                 onChange={this.onChange}
                 placeholder="itemName"
@@ -43,7 +52,7 @@ class ItemEditForm extends Component {
                 <br />
                 <input
                 name="description"
-                value={item.description}
+                value={editItem.description}
                 type="text"
                 onChange={this.onChange}
                 placeholder="description"
@@ -51,7 +60,7 @@ class ItemEditForm extends Component {
                 <br />
                 <input
                 name="quantity" //make this have distinct numbers
-                value={item.quantity}
+                value={editItem.quantity}
                 type="text"
                 onChange={this.onChange}
                 placeholder="quantity"
@@ -60,7 +69,7 @@ class ItemEditForm extends Component {
                 <label htmlFor="color">color: </label>
                 <input
                 name="color"
-                value={item.color}
+                value={editItem.color}
                 type="color"
                 onChange={this.onChange}
                 placeholder="color"
@@ -68,7 +77,7 @@ class ItemEditForm extends Component {
                 <br />
                 <input
                 name="size"
-                value={item.size}
+                value={editItem.size}
                 type="text"
                 onChange={this.onChange}
                 placeholder="size, ex: M, 2"
@@ -77,13 +86,13 @@ class ItemEditForm extends Component {
                 <label htmlFor="price">$</label>
                 <input
                 name="price"
-                value={item.price}
+                value={editItem.price}
                 type="text"
                 onChange={this.onChange}
                 placeholder="00.00"
                 />
                 <br />
-                <button onClick={this.onSumbit}>
+                <button onClick={this.onSubmit}> {/*spent 30 min realizing i spelled submit wrong. -_- */}
                     Change
                 </button>
                 <button>
@@ -94,5 +103,9 @@ class ItemEditForm extends Component {
         )
     }
 }
+const condition = authUser => !! authUser
 
-export default withFirebase(ItemEditForm)// need withFirebase?
+export default compose(
+  withFirebase,
+  withAuthorization(condition), //somehow this fixed my staying logged in error???
+)(ItemEditForm)
