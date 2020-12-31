@@ -34,21 +34,20 @@ class SignInForm extends React.Component {
 
 	onSubmit = event => {
 		event.preventDefault();
-		this.setState({ status: 'SUBMITTING' }); // lock out the form in render()
+		this.setState({ status: 'Submitting...' }); // lock out the form in render()
 
 		const { email, password } = this.state;
 
 		trySignIn(email, password)
 			.then((credential) => { // user signed in at this point
-				localStorage.setItem('authUser', JSON.stringify(credential.user));
-				this.setState({ ...INITIAL_STATE });
-				this.setState({ status: 'SUBMITTED' }); // redirect on next render()
+				// redirect on next render()
+				this.setState({ ...INITIAL_STATE, status: 'SUCCESS' });
 			})
 			.catch(error => {
 				this.setState({ ...INITIAL_STATE });
 				alert(error.message);
 			});
-	}
+	};
 
 	onChange = event => {
 		this.setState({ [event.target.name]: event.target.value });
@@ -59,7 +58,7 @@ class SignInForm extends React.Component {
 
 		let isInvalid = false;
 		let statusMsg = '';
-		if(status === 'SUBMITTED') { // done with the form, leave
+		if(status === 'SUCCESS') { // done with the form, leave
 			return <Redirect to={ROUTES.HOME} />;
 		} else if (status) { // don't allow submission when status nontrivial
 			isInvalid = true;

@@ -3,13 +3,13 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Navigation from './navigation';
 import LandingPage from './landing';
-import { withAuthProvider } from './firebase/auth';
+import { asAuthProvider } from './firebase/auth';
 import SignUpPage from './sign-up';
 import SignInPage from './sign-in';
 import PasswordForgetPage from './pw-forget';
 import HomePage from './home';
 // import AccountPage from '../Account';
-// import AdminPage from '../Admin';
+import AdminPage from './admin';
 // import ItemPage from '../ItemPage'
 // import Form from '../ItemForm'
 
@@ -29,10 +29,10 @@ const App = () => (
 			<Route exact path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
 			<Route exact path={ROUTES.HOME} component={HomePage} />
 			{/* <Route exact path={ROUTES.ACCOUNT} component={AccountPage} /> */}
-			{/* <Route exact path={ROUTES.ADMIN} component={AdminPage} /> */}
+			<Route exact path={ROUTES.ADMIN} component={AdminPage} />
 			{/* <Route exact path={ROUTES.ITEM_PAGE} component={ItemPage} /> */}
 			{/* <Route exact path="/itemform" component={Form} /> */}
 		</div>
 	</Router>
 );
-export default withAuthProvider(App);
+export default asAuthProvider(App);

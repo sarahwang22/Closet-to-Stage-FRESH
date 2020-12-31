@@ -11,7 +11,7 @@ import * as ROUTES from '../constants/routes';
 const Navigation = () => (
 	<div>
 		<AuthUserContext.Consumer>
-			{authUser => (authUser || localStorage.getItem('authUser'))
+			{authUser => authUser
 				? <NavigationAuth />
 				: <NavigationNonAuth />}
 		</AuthUserContext.Consumer>
@@ -34,11 +34,11 @@ const NavigationAuth = () => (
 			</li>
 			{/* <li>
 				<Link to={ROUTES.ACCOUNT}>Account</Link>
-			</li>
+			</li> */}
 			<li>
 				<Link to={ROUTES.ADMIN}>Admin</Link>
 			</li>
-			<li>
+			{/* <li>
 				<Link to={ROUTES.ITEM_PAGE}>ItemPage</Link>
 			</li>
 			<li>

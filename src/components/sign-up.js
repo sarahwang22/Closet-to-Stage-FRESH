@@ -47,14 +47,13 @@ class SignUpForm extends React.Component {
 
 	onSubmit = event => {
 		event.preventDefault();
-		this.setState({ status: 'SUBMITTING' }); // lock out the form in render()
+		this.setState({ status: 'Submitting...' }); // lock out the form in render()
 
 		const { username, email, passwordOne } = this.state;
 		const roles = []; // TODO make additional user roles if needed
 
 		tryCreateUser(email, passwordOne)
 			.then(credential => { // user signed in at this point
-				localStorage.setItem('authUser', JSON.stringify(credential.user));
 				return dbGetUser(credential.user.uid) // add user to database
 					.set({
 						username,
@@ -63,14 +62,14 @@ class SignUpForm extends React.Component {
 					}, { merge: true });
 			})
 			.then(() => {
-				this.setState({ ...INITIAL_STATE });
-				this.setState({ status: 'SUBMITTED' }); // redirect on next render()
+				// redirect on next render()
+				this.setState({ ...INITIAL_STATE, status: 'SUCCESS' });
 			})
 			.catch(error => {
 				this.setState({ ...INITIAL_STATE });
 				alert(error.message);
 			});
-	}
+	};
 
 	onChange = event => {
 		this.setState({ [event.target.name]: event.target.value });
@@ -82,12 +81,12 @@ class SignUpForm extends React.Component {
 			email,
 			passwordOne,
 			passwordTwo,
-			status
+			status,
 		} = this.state;
 
 		let isInvalid = false;
 		let statusMsg = '';
-		if (status === 'SUBMITTED') { // done with the form, leave
+		if(status === 'SUCCESS') { // done with the form, leave
 			return <Redirect to={ROUTES.HOME} />;
 		} else if (status) { // don't allow submission when status nontrivial
 			isInvalid = true;

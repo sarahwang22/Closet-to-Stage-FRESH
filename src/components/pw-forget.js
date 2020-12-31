@@ -6,7 +6,7 @@ import * as ROUTES from '../constants/routes';
 
 const PasswordForgetPage = () => (
 	<div>
-		<h1>Forgot Password</h1>
+		<h1>Reset Password</h1>
 		<PasswordForgetForm />
 	</div>
 );
@@ -14,7 +14,7 @@ export default PasswordForgetPage;
 
 export const PasswordForgetLink = () => (
 	<p>
-		<Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
+		<Link to={ROUTES.PASSWORD_FORGET}>Reset Password</Link>
 	</p>
 );
 
@@ -34,14 +34,14 @@ class PasswordForgetForm extends React.Component {
 
 	onSubmit = event => {
 		event.preventDefault();
-		this.setState({ status: 'SUBMITTING' }); // lock out the form in render()
+		this.setState({ status: 'Submitting...' }); // lock out the form in render()
 
 		const { email } = this.state;
 
 		trySendPasswordReset(email)
 			.then(() => {
-				this.setState({ ...INITIAL_STATE });
-				this.setState({ status: 'SUBMITTED' }); // redirect on next render()
+				// redirect on next render()
+				this.setState({ ...INITIAL_STATE, status: 'SUCCESS' });
 			})
 			.catch(error => {
 				this.setState({ ...INITIAL_STATE });
@@ -58,7 +58,7 @@ class PasswordForgetForm extends React.Component {
 
 		let isInvalid = false;
 		let statusMsg = '';
-		if (status === 'SUBMITTED') { // done with the form, leave
+		if (status === 'SUCCESS') { // done with the form, leave
 			return <Redirect to={ROUTES.SIGN_IN} />;
 		} else if (status) { // don't allow submission when status nontrivial
 			isInvalid = true;
