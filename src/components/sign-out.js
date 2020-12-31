@@ -5,7 +5,9 @@ const SignOutButton = () => (
 	<div>
 		<button onClick={() => {
 			trySignOut()
-				.then(() => alert('Success'))
+				.then(() => { // user signed out at this point
+					localStorage.removeItem('authUser');
+				})
 				.catch(error => alert(error.message));
 		}}>Sign Out</button>
 	</div>

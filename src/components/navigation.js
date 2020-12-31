@@ -2,18 +2,26 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import AuthUserContext from './firebase/auth';
-import SignOutButton from './signout';
+import SignOutButton from './sign-out';
 import * as ROUTES from '../constants/routes';
 
+/**
+ * Navigation bar based on the current authentication state.
+ */
 const Navigation = () => (
 	<div>
 		<AuthUserContext.Consumer>
-			{authUser => authUser ? <NavigationAuth /> : <NavigationNonAuth />}
+			{authUser => (authUser || localStorage.getItem('authUser'))
+				? <NavigationAuth />
+				: <NavigationNonAuth />}
 		</AuthUserContext.Consumer>
 	</div>
 );
 export default Navigation;
 
+/**
+ * Authenticated version of the navigation bar.
+ */
 const NavigationAuth = () => (
 	<div>
 		<h1>closet to stage</h1>
@@ -21,10 +29,10 @@ const NavigationAuth = () => (
 			<li>
 				<Link to={ROUTES.LANDING}>Landing</Link>
 			</li>
-			{/* <li>
+			<li>
 				<Link to={ROUTES.HOME}>Home</Link>
 			</li>
-			<li>
+			{/* <li>
 				<Link to={ROUTES.ACCOUNT}>Account</Link>
 			</li>
 			<li>
@@ -43,6 +51,9 @@ const NavigationAuth = () => (
 	</div>
 );
 
+/**
+ * Regular version of the navigation bar.
+ */
 const NavigationNonAuth = () => (
 	<div>
 		<h1>closet to stage</h1>

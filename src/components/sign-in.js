@@ -2,7 +2,8 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { trySignIn } from './firebase/auth';
-import { SignUpLink } from './signup';
+import { SignUpLink } from './sign-up';
+import { PasswordForgetLink } from './pw-forget';
 
 import * as ROUTES from '../constants/routes';
 
@@ -10,7 +11,7 @@ const SignInPage = () => (
 	<div>
 		<h1>Sign In</h1>
 		<SignInForm />
-		{/* <PasswordForgetLink /> */}
+		<PasswordForgetLink />
 		<SignUpLink />
 	</div>
 );
@@ -33,15 +34,15 @@ class SignInForm extends React.Component {
 
 	onSubmit = event => {
 		event.preventDefault();
-		this.setState({ status: 'SUBMITTING' });
+		this.setState({ status: 'SUBMITTING' }); // lock out the form in render()
 
 		const { email, password } = this.state;
 
 		trySignIn(email, password)
-			.then(() => {
+			.then((credential) => { // user signed in at this point
+				localStorage.setItem('authUser', JSON.stringify(credential.user));
 				this.setState({ ...INITIAL_STATE });
-				this.setState({ status: 'SUBMITTED' });
-				alert('Success');
+				this.setState({ status: 'SUBMITTED' }); // redirect on next render()
 			})
 			.catch(error => {
 				this.setState({ ...INITIAL_STATE });
@@ -50,19 +51,17 @@ class SignInForm extends React.Component {
 	}
 
 	onChange = event => {
-		this.setState({
-			[event.target.name]: event.target.value
-		});
-	}
+		this.setState({ [event.target.name]: event.target.value });
+	};
 
 	render() {
 		const { email, password, status } = this.state;
 
 		let isInvalid = false;
 		let statusMsg = '';
-		if(status === 'SUBMITTED') {
-			return <Redirect to={ROUTES.LANDING} />;
-		} else if (status) {
+		if(status === 'SUBMITTED') { // done with the form, leave
+			return <Redirect to={ROUTES.HOME} />;
+		} else if (status) { // don't allow submission when status nontrivial
 			isInvalid = true;
 			statusMsg = status;
 		} else if (email.length === 0) {

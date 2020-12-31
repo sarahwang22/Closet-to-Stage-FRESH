@@ -6,6 +6,9 @@ import { dbGetUser } from './firebase/db';
 
 import * as ROUTES from '../constants/routes';
 
+/**
+ * Component providing the sign up form.
+ */
 const SignUpPage = () => (
 	<div>
 		<h1>Sign Up</h1>
@@ -14,6 +17,9 @@ const SignUpPage = () => (
 );
 export default SignUpPage;
 
+/**
+ * Link to the sign up page.
+ */
 export const SignUpLink = () => (
 	<p>
 		Don't have an account?
@@ -41,14 +47,15 @@ class SignUpForm extends React.Component {
 
 	onSubmit = event => {
 		event.preventDefault();
-		this.setState({ status: 'SUBMITTING' });
+		this.setState({ status: 'SUBMITTING' }); // lock out the form in render()
 
 		const { username, email, passwordOne } = this.state;
 		const roles = []; // TODO make additional user roles if needed
 
 		tryCreateUser(email, passwordOne)
-			.then(credential => {
-				return dbGetUser(credential.user.uid)
+			.then(credential => { // user signed in at this point
+				localStorage.setItem('authUser', JSON.stringify(credential.user));
+				return dbGetUser(credential.user.uid) // add user to database
 					.set({
 						username,
 						email,
@@ -57,8 +64,7 @@ class SignUpForm extends React.Component {
 			})
 			.then(() => {
 				this.setState({ ...INITIAL_STATE });
-				this.setState({ status: 'SUBMITTED' });
-				alert('Success');
+				this.setState({ status: 'SUBMITTED' }); // redirect on next render()
 			})
 			.catch(error => {
 				this.setState({ ...INITIAL_STATE });
@@ -67,10 +73,8 @@ class SignUpForm extends React.Component {
 	}
 
 	onChange = event => {
-		this.setState({
-			[event.target.name]: event.target.value
-		});
-	}
+		this.setState({ [event.target.name]: event.target.value });
+	};
 
 	render() {
 		const {
@@ -83,9 +87,9 @@ class SignUpForm extends React.Component {
 
 		let isInvalid = false;
 		let statusMsg = '';
-		if (status === 'SUBMITTED') {
-			return <Redirect to={ROUTES.LANDING} />;
-		} else if (status) {
+		if (status === 'SUBMITTED') { // done with the form, leave
+			return <Redirect to={ROUTES.HOME} />;
+		} else if (status) { // don't allow submission when status nontrivial
 			isInvalid = true;
 			statusMsg = status;
 		} else if (username.length === 0) {
