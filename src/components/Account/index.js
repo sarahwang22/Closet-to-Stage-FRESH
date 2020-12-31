@@ -5,11 +5,13 @@ import { withFirebase } from '../Firebase';
 import {withAuthorization} from '../Session'
 //import * as ROLES from '../../constants/roles'
 import PasswordChangeForm from '../PasswordChange'
+import ItemEdit from '../ItemEdit'
  
 class AccountPage extends Component {
   constructor(props) {
     super(props);
  
+    
     this.state = {
       user: {},
       loading: false,
@@ -21,6 +23,7 @@ class AccountPage extends Component {
     this.setState({ loading: true });
 
     var cuser = this.props.firebase.currentUser()
+    console.log(cuser)
 
     if(cuser != null){ //but do you really need this? because account can only be accessed by auth users
         var cuid = cuser.uid;
@@ -33,14 +36,14 @@ class AccountPage extends Component {
                 user: snapshot.data(),
                 loading: false
               })
-              console.log(this.state.user)
+              //console.log(this.state.user)
             }  
           })
           
           this.props.firebase.user(cuid) //how to get data once
             .get()
             .then(doc=>{
-              console.log(doc.data())
+              //console.log(doc.data())
             })
 
             this.props.firebase.userItems(cuid) //collection, not a doc
@@ -52,7 +55,7 @@ class AccountPage extends Component {
                   userItems.push({itemID: doc.id, ...doc.data()})
                 })
                 
-                console.log(userItems)
+                //console.log(userItems)
 
                 this.setState({userItems})
               })
@@ -90,7 +93,7 @@ class AccountPage extends Component {
   }
   render() {
       const { user, loading, userItems } = this.state
-      console.log(userItems)
+ 
     return (
       <div>
         <h1>Account</h1>
@@ -100,6 +103,8 @@ class AccountPage extends Component {
         <PasswordChangeForm/>
         <User user={user} />
 
+        <a href="/itemform"> Add Item</a>
+
         <ItemsList items = {userItems} />
 
       </div>
@@ -108,7 +113,6 @@ class AccountPage extends Component {
 }
 
 const User = ({user}) => ( 
-    //completely don't understand ???
     <div>
       <ul>   
           <li >
@@ -124,26 +128,37 @@ const User = ({user}) => (
     </div>
 )
 
-const ItemsList = (props) => {
-  console.log(props.items)
+const ItemsList = ({items}) => {
+  //console.log(items)
 
   return (
     <div className="itemslist">
       <ul>
-        {props.items.map(item=> <li> <Item item={item}/> </li>)}
+        {items.map(item=> <li key={item.itemID}> <ItemEdit item={item}/> </li>)} 
+        {/* ItemEdit recieves prop object that looks like
+        {
+          item: {
+            itemID: #,
+            item: {
+              description:,
+              color:,
+              etc.
+            }
+          }
+        } */}
       </ul>
     </div>
   )
 }
 
-const Item =  (props) =>{ //or use ({item}) instead of (props) and change accoridngly
+/* const Item =  (props) =>{ //or use ({item}) instead of (props) and change accoridngly
   //console.log(props.item)
 return(
     <div className="item">
       <strong>itemName: {props.item.item.itemName}, color: {props.item.item.color} </strong>
     </div>
   )
-}
+} */
  
 
 

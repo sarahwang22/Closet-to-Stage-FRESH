@@ -44,9 +44,7 @@ class SignUpFormBase extends Component {
         if(isAdmin){
             roles[ROLES.ADMIN] = ROLES.ADMIN
         }
-        else{
-            roles[ROLES.ADMIN] = null
-        }
+        
 
         this.props.firebase
             .doCreateUserWithEmailAndPassword(email, passwordOne)

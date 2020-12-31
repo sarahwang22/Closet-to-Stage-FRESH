@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 
 import {withFirebase} from '../Firebase'
+
 //import { AuthUserContext, withAuthorization } from '../Session'
 
 import "./itempage.css"
@@ -84,13 +85,12 @@ const ItemsList = ({items}) =>(
 ) 
 
 const Item=({item})=>{
+    //console.log(item.itemID)
+
     return(
         <div className="item">
-            <span > 
-                {item.item.itemId} {/* just to show how to get the ID */}
-                <strong>itemName: {item.item.itemName}, color: {item.item.color} </strong>
-            </span>
-            
+            <p>itemID: {item.itemID}</p> {/* {itemID: , item: {itemName: , color: ,}} */}
+            <strong>itemName: {item.item.itemName}, color: {item.item.color} </strong>
         </div>
     )
 }

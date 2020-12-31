@@ -62,15 +62,20 @@ const firebaseConfig = {
             this.db.collection('items') //creates a Ref
         //use parenthsis, not curly quotes for returning
         
-        doAddItem = (item, uid) => {
-           this.db.collection('items').add ({item})
+        doAddItem = (item) => {
+           this.db.collection('items').add (item)
 
             //var itemKey = itemRef.key //ref can refer to a push(), but not push().set()
             //console.log("item key "+itemKey)
 
-            this.db.collection('users/' + uid +'/items').add({ 
+            //don't store in two locations 
+            /*this.db.collection('users/' + uid +'/items').add({ 
                 item,
-            })  
+            })  */
+        }
+
+        doEditItem = (item, uid) => {
+
         }
 
         /*Account API */
@@ -90,8 +95,11 @@ const firebaseConfig = {
                     
                     promise.then(snapshot => { //could also get rid of 'promise' and go directly to '.then'
                         const dbUser = snapshot.data()
-                        const roles = dbUser.roles
-                        console.log({roles})
+
+                        if(dbUser.roles){
+                            var roles = dbUser.roles
+                        }
+                        //console.log({roles})
 
 
                         if(!roles){
@@ -105,7 +113,7 @@ const firebaseConfig = {
                             ...dbUser
                         }
                         
-                        console.log(authUser)
+                        //console.log(authUser)
 
                         //console.log(dbUser)
                         //console.log(authUser)

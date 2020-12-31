@@ -29,6 +29,7 @@ const withAuthentication = Component =>{
             //this.props.firebase.user().off(); //detatches callback
           }
         render(){
+            console.log({...this.props})
             return(
                 <AuthUserContext.Provider value={this.state.authUser}>
                     <Component {...this.props} /> 

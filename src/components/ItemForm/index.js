@@ -1,49 +1,64 @@
 //don't use this page, everything's on ItemPage I think
 
 import React, {Component} from 'react'
+import {compose} from 'recompose'
 
-import {withFirebase} from '../Firebase'
-import withAuthentication from '../Session/withAuthentication'
+import { withFirebase } from '../Firebase';
+import {withAuthorization} from '../Session'
+import {withAuthentication} from '../Session'
+
 
 const INITIAL_STATE={
   item:{
     itemName:'',
     description:'',
-    color:'',
+    color:null,
     size:'',
     //sleeveLength:'',
     quantity:'',
     brand:'',
     price:'',
     error: null,
-  }
+  },
+  userID: null,
 }
 
 class Form extends Component {
   constructor(props){
-    super(props)    
-    this.state={...INITIAL_STATE}
+    super(props)  
+    
+    let cuid = this.props.firebase.currentUser().uid
+    //console.log(cuid)
+    this.state={...INITIAL_STATE, userID: cuid}
+
+    console.log(this.state)
+  }
+
+  componentDidMount () {
+    console.log(this.props.firebase.currentUser().uid)
   }
 
   onChange = event =>{
+    const {item} = this.state
     this.setState({
         item:{
           ...this.state.item,
           [event.target.name]:event.target.value
         } 
     }) 
-    console.log(this.state)
+
+    /* console.log({...item})// will spread out item properties, then put {} on the out side
+    console.log(item)// keeps the item obj as it is
+    console.log({item})//will put item into an object with 'item' as a property */
+    
   }
 
   onSumbit = event =>{
-    const {item} = this.state
-
-    const cuid = this.props.firebase.currentUser().uid
-
-    this.props.firebase.doAddItem(item, cuid)
+    const {item, userID} = this.state
+    
+    this.props.firebase.doAddItem({...item, userID})
 
     this.setState({...INITIAL_STATE})
-  
     event.preventDefault()
   }
 
@@ -118,5 +133,11 @@ class Form extends Component {
       )
   }
 }
+const condition = authUser => !! authUser
 
-export default withAuthentication(withFirebase(Form))
+export default compose(
+  withFirebase,
+  withAuthorization(condition), //somehow this fixed my staying logged in error???
+)(Form) //need to study compose
+
+//export default withFirebase(Form) //deosn't stay logged in
