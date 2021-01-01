@@ -77,7 +77,9 @@ const ItemsList = (props) =>(
     <div className="itemslist"> {/*className vs class is React convention*/}
         <ul>
             {props.items.map(item=>( //map uses ()
-                <Item item={item}/>
+                <li key={item.id}>
+                    <Item item={item}/>
+                </li>
             ))}
         </ul>
        

@@ -6,6 +6,8 @@ import * as ROUTES from '../../constants/routes';
 
 import {AuthUserContext} from '../Session'
 
+import './navigation.css'
+
 const Navigation = () => (
   
     <div>

@@ -99,7 +99,7 @@ const UserList = ({users}) => {
     
 
 const condition = authUser => (
-  authUser && authUser //needs fixing
+  authUser && (authUser.roles.ADMIN=="ADMIN") //needs fixing
 )
   
   

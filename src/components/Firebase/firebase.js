@@ -102,13 +102,12 @@ const firebaseConfig = {
                     
                     promise.then(snapshot => { //could also get rid of 'promise' and go directly to '.then'
                         const dbUser = snapshot.data()
+                        console.log(dbUser.roles)
 
-                        if(dbUser.roles){
-                            var roles = dbUser.roles //this bit causes trouble every time you delete a user from database, but not in authentication
-                        }
+
                         //console.log({roles})
 
-                        if(!roles){
+                        if(!dbUser.roles || dbUser.roles==undefined){
                             dbUser.roles= {}
                         }
 
@@ -120,13 +119,11 @@ const firebaseConfig = {
                         }
                         
                         //console.log(authUser)
-
                         //console.log(dbUser)
-                        //console.log(authUser)
 
+                        next(authUser) //OH this was outside 'if', which meant authUser was never passed to withAuthorization
                     })
-                    next(authUser)
-
+                    
                 } else { //user is not authenticated/authorized
                     fallback();
                 }

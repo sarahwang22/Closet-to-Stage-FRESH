@@ -105,7 +105,9 @@ class ItemEditForm extends Component {
 }
 const condition = authUser => !! authUser
 
-export default compose(
+/*export default compose(
   withFirebase,
-  withAuthorization(condition), //somehow this fixed my staying logged in error???
-)(ItemEditForm)
+  withAuthorization(condition), 
+)(ItemEditForm) */
+
+export default withFirebase(ItemEditForm)
