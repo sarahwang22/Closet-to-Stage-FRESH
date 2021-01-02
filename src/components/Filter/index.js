@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 
+import {withFirebase} from '../Firebase'
+
 class Filter extends Component{
     constructor(props){
         super(props)
@@ -78,14 +80,14 @@ class Filter extends Component{
                 .then(snapshot => {
                     snapshot.forEach(doc=>{
 
-                        /* this.setState(state=>{
+                        this.setState(state=>{
                             const list = state.filtItemsList.concat({itemID: doc.id, ...doc.data()})
 
                             return({
                                 ...state,
                                 filtItemsList:list
                             })
-                        }) */
+                        }) 
                         
                     })
 
@@ -111,7 +113,7 @@ class Filter extends Component{
                         <label for="dress">dress</label>
                         <input class="type" type="checkbox" id="dress" name="dress" value="dress" checked={!!filters.type.dress} onClick={this.onClick("type")}/>
                         <label for="bottom">bottom</label>
-                        <input class="type" type="checkbox" id="bottom" name="bottom" value="bottom" onClick={this.onClick("type")}/>
+                        <input class="type" type="checkbox" id="bottom" name="bottom" value="bottom" checked={!!filters.type.bottom} onClick={this.onClick("type")}/>
                         <label for="top">top</label>
                         <input class="type" type="checkbox" id="top" name="top" value="top" onClick={this.onClick("type")}/>
                     <h5>brand</h5>
@@ -128,6 +130,7 @@ class Filter extends Component{
 }
 
 const FiltItemsList = (props) =>{
+    
     console.log(props)
 
     return(
@@ -139,4 +142,4 @@ const FiltItemsList = (props) =>{
     )
 }
 
-export default Filter
+export default withFirebase(Filter)
