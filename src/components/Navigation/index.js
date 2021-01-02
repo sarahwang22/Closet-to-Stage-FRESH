@@ -9,22 +9,18 @@ import {AuthUserContext} from '../Session'
 import './navigation.css'
 
 const Navigation = () => (
-  
-    <div>
+    <div class="nav">
       <AuthUserContext.Consumer>
         {authUser => //can replace with authUser
           authUser ? <NavigationAuth /> : <NavigationNonAuth />
         }
       </AuthUserContext.Consumer>
     </div>
-  
-  
 );
 
 //splits up the old navigation component into auth and non-auth, then uses a ternary oper above
 const NavigationAuth = () =>( //use parentheses not bracket dumb b
-  <div>
-    <h1>closet to stage</h1>
+  <div >
     <ul>
       <li>
         <Link to={ROUTES.LANDING}>Landing</Link>
@@ -53,7 +49,6 @@ const NavigationAuth = () =>( //use parentheses not bracket dumb b
 
 const NavigationNonAuth = () =>(
   <div>
-    <h1>closet to stage</h1>
     <ul>
       <li>
         <Link to={ROUTES.SIGN_IN}>Sign In</Link>

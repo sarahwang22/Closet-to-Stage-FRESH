@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 
 import {withFirebase} from '../Firebase'
+import SearchBar from '../SearchBar'
 
 //import { AuthUserContext, withAuthorization } from '../Session'
 
@@ -10,7 +11,8 @@ const ItemPage =()=>{
     return(
         <div>
             <h3>Items Page</h3>
-             <Items />
+            <SearchBar />
+            <Items />
         </div>
     )
 }
@@ -25,6 +27,7 @@ class ItemPageBase extends Component{
     }
     componentDidMount(){ //work on uploading only a few items to each page
           this.unsubscribe = this.props.firebase.items() // this. referes to element it's called upon
+            .where('isListed','==',true)
             .onSnapshot(snapshot => {
                 let itemsList = [];
 
@@ -77,7 +80,7 @@ const ItemsList = (props) =>(
     <div className="itemslist"> {/*className vs class is React convention*/}
         <ul>
             {props.items.map(item=>( //map uses ()
-                <li key={item.id}>
+                <li key={item.itemID}>
                     <Item item={item}/>
                 </li>
             ))}
@@ -88,12 +91,13 @@ const ItemsList = (props) =>(
 
 const Item=(props)=>{
     //console.log(item.itemID)
-
+    /* {itemName: , color: , itemID: ,} */
     return(
         <div className="item">
-            <p>itemID: {props.item.itemID}</p> {/* {itemName: , color: , itemID: ,} */}
-            <strong>itemName: {props.item.itemName}, color: {props.item.color} </strong>
-            <h5>userID: {props.item.userID}</h5>
+            <h2>itemName: {props.item.itemName}</h2>
+            <h3 style={{backgroundColor:`${props.item.color}`}}>color: {props.item.color} </h3>
+            <h5>itemID: {props.item.itemID}</h5> 
+            <p>userID: {props.item.userID} [prof pic]</p>
         </div>
     )
 }

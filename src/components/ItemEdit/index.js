@@ -3,17 +3,19 @@ import React from 'react'
 import ItemEditForm from '../ItemEditForm'
 
 const ItemEdit = (props) =>{ 
-    
-    const item = props.item //fixed
-    console.log(item)
-    const color = item.color
+    const item = props.item //fixed item.item
+
+    const {itemName, brand, color, description, id, price, isListed} = item
+   
     return(
         <div>
-            <h3>{item.itemName}</h3>
+            {isListed? <h1>for sale</h1> : <h1>not for sale</h1>}
+            <h3>{itemName}</h3>
             <div style={{backgroundColor:`${color}`}}>color : {color}</div>
-            <p>description: {item.description}</p>
-            <h5>id: {item.id}</h5>
-            <h4>price ${item.price}</h4>
+            <h3>brand: {brand}</h3>
+            <p>description: {description}</p>
+            <h5>id: {id}</h5>
+            <h4>price ${price}</h4>
             <button>Edit</button>
             <ItemEditForm item={item}/> 
         </div>

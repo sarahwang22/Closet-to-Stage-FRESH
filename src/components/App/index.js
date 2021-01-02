@@ -15,10 +15,30 @@ import Form from '../ItemForm'
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
 
+import './app.css'
+
 const App = () => (
   <Router>
     <div>
-      <Navigation />
+      <header>
+      <div class="measurements">
+          <div>
+            <div class="first"></div> 
+            <h5>30px(1.8rem)</h5>
+          </div>
+          <div>
+            <div class="second"></div> 
+            <h5>50px(3.1rem)</h5>
+          </div>
+          <div>
+            <div class="third"></div> 
+            <h5>100px(6.6rem)</h5>
+          </div>
+        </div>
+        <h1>closet to stage</h1>
+        <Navigation />
+      </header>
+      
       <hr />
       <Route exact path={ROUTES.LANDING} component={LandingPage} />
       <Route exact path={ROUTES.SIGN_UP} component={SignUpPage} />

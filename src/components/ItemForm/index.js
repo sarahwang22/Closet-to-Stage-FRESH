@@ -12,12 +12,13 @@ const INITIAL_STATE={
   item:{
     itemName:'',
     description:'',
-    color:null,
+    color:'',
     size:'',
     //sleeveLength:'',
     quantity:'',
     brand:'',
     price:'',
+    isListed: false, //or should it be false initially?
     error: null,
   },
   userID: null,
@@ -56,7 +57,7 @@ class Form extends Component {
   onSumbit = event =>{
     const {item, userID} = this.state
     
-    this.props.firebase.doAddItem({...item, userID})
+    this.props.firebase.doAddItem({...item, userID, isListed: true})
 
     this.setState({...INITIAL_STATE})
     event.preventDefault()
@@ -87,6 +88,13 @@ class Form extends Component {
           placeholder="description"
         />
         <br />
+        <input
+          name="brand"
+          value={item.brand}
+          type="text"
+          onChange={this.onChange}
+          placeholder="brand"
+        />
         <input
           name="quantity" //make this have distinct numbers
           value={item.quantity}

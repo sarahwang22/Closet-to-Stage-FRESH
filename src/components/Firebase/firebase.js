@@ -6,14 +6,13 @@ import 'firebase/firestore'
 //console.log(process.env.REACT_APP_API_KEY) //restart local program to see env changes
 
 const firebaseConfig = {
-    apiKey: process.env.REACT_APP_API_KEY,
-    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    databaseURL: process.env.REACT_APP_DATABASE_URL,
-    projectId: process.env.REACT_APP_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_APP_ID,
-    measurementId: process.env.REACT_APP_MEASUREMENT_ID
+    apiKey: "AIzaSyAy54gs5VLLS1aCQ8gJzauIu8zAbMC_ELY",
+    authDomain: "closet-to-stage-16bb6.firebaseapp.com",
+    projectId: "closet-to-stage-16bb6",
+    storageBucket: "closet-to-stage-16bb6.appspot.com",
+    messagingSenderId: "601529027789",
+    appId: "1:601529027789:web:13b1b73191e399be9bed84",
+    measurementId: "G-H172SXJ9ZX"
   };
   
   class Firebase {
@@ -85,6 +84,30 @@ const firebaseConfig = {
                 .set(editItem, {merge: true})
         }
 
+        doDeleteItem = (itemID) => {
+            this.db.collection('items').doc(itemID).delete()
+        }
+
+        doChangeListing = (itemID) => {
+
+            this.db.collection('items').doc(itemID)
+                .get()
+                .then(doc => {
+                    const data = doc.data()
+                    const listStatus = !data.isListed
+
+                    this.db.collection('items').doc(itemID)
+                        .set({
+                            isListed: listStatus
+                        }, {merge: true})
+                    
+                })
+
+            
+                
+
+        }
+
         /*Account API */
 
         getUserItems = () => {
@@ -107,7 +130,7 @@ const firebaseConfig = {
 
                         //console.log({roles})
 
-                        if(!dbUser.roles || dbUser.roles==undefined){
+                        if(!dbUser.roles || dbUser.roles===undefined){
                             dbUser.roles= {}
                         }
 
@@ -134,11 +157,7 @@ const firebaseConfig = {
 
         currentUser = () =>(
             this.auth.currentUser
-        )
-           
-        
-        
-            
+        )          
   }
 
   export default Firebase

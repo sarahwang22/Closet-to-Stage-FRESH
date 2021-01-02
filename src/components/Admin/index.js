@@ -99,7 +99,7 @@ const UserList = ({users}) => {
     
 
 const condition = authUser => (
-  authUser && (authUser.roles.ADMIN=="ADMIN") //needs fixing
+  authUser && (authUser.roles.ADMIN==="ADMIN") //originally caused a 'can't read property ADMIN of type null'. problem was that authUser and therefore the updated role were never passed from firebase to withAuthorization
 )
   
   
@@ -110,4 +110,3 @@ export default compose(
   withAuthorization(condition),
   withFirebase,
 )(AdminPage) //need to study compose
-

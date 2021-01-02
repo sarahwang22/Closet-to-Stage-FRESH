@@ -50,7 +50,7 @@ class AccountPage extends Component {
               querySnapshot.forEach(doc => {
                 //doc.data() returns an object-- the full item
                 userItems.push({id: doc.id, ...doc.data()})
-                console.log(userItems)
+                //console.log(userItems)
               })
 
               this.setState({ //setting all of userItems to state to send to <ItemsList/>
