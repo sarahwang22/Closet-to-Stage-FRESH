@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 
 import {withFirebase} from '../Firebase'
 import SearchBar from '../SearchBar'
+import Filter from '../Filter'
 
 //import { AuthUserContext, withAuthorization } from '../Session'
 
@@ -12,6 +13,7 @@ const ItemPage =()=>{
         <div>
             <h3>Items Page</h3>
             <SearchBar />
+            <Filter />
             <Items />
         </div>
     )
@@ -95,6 +97,8 @@ const Item=(props)=>{
     return(
         <div className="item">
             <h2>itemName: {props.item.itemName}</h2>
+            <p>type: {props.item.type}</p>
+            <p>brand: {props.item.brand}</p>
             <h3 style={{backgroundColor:`${props.item.color}`}}>color: {props.item.color} </h3>
             <h5>itemID: {props.item.itemID}</h5> 
             <p>userID: {props.item.userID} [prof pic]</p>

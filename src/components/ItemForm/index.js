@@ -11,6 +11,7 @@ import {withAuthentication} from '../Session'
 const INITIAL_STATE={
   item:{
     itemName:'',
+    type:'', //turn into a suggester input later
     description:'',
     color:'',
     size:'',
@@ -86,6 +87,14 @@ class Form extends Component {
           type="text"
           onChange={this.onChange}
           placeholder="description"
+        />
+        <br />
+        <input
+          name="type"
+          value={item.type}
+          type="text"
+          onChange={this.onChange}
+          placeholder="type"
         />
         <br />
         <input

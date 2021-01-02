@@ -58,7 +58,7 @@ class ItemEditForm extends Component {
     }
 
     render(){
-        const {itemName, description, brand, quantity, color, price, size} = this.state
+        const {itemName, description, type, brand, quantity, color, price, size} = this.state
 
         return(
             <form>
@@ -76,6 +76,14 @@ class ItemEditForm extends Component {
                     type="text"
                     onChange={this.onChange}
                     placeholder="description"
+                />
+                <br />
+                <input
+                    name="type"
+                    value={type}
+                    type="text"
+                    onChange={this.onChange}
+                    placeholder="type"
                 />
                 <br />
                 <input
