@@ -110,16 +110,16 @@ class Filter extends Component{
             <div>
                 <form>
                     <h5>type</h5>
-                        <label for="dress">dress</label>
-                        <input class="type" type="checkbox" id="dress" name="dress" value="dress" checked={!!filters.type.dress} onClick={this.onClick("type")}/>
-                        <label for="bottom">bottom</label>
-                        <input class="type" type="checkbox" id="bottom" name="bottom" value="bottom" checked={!!filters.type.bottom} onClick={this.onClick("type")}/>
-                        <label for="top">top</label>
-                        <input class="type" type="checkbox" id="top" name="top" value="top" onClick={this.onClick("type")}/>
+                        <label htmlFor="dress">dress</label>
+                        <input className="type" type="checkbox" id="dress" name="dress" value="dress" checked={!!filters.type.dress} onClick={this.onClick("type")}/>
+                        <label htmlFor="bottom">bottom</label>
+                        <input className="type" type="checkbox" id="bottom" name="bottom" value="bottom" checked={!!filters.type.bottom} onClick={this.onClick("type")}/>
+                        <label htmlFor="top">top</label>
+                        <input className="type" type="checkbox" id="top" name="top" value="top" onClick={this.onClick("type")}/>
                     <h5>brand</h5>
-                        <label for="costco">costco</label>
+                        <label htmlFor="costco">costco</label>
                         <input type="checkbox" id="coscto" name="costco" value="costco" onClick={this.onClick("brand")}/>
-                        <label for="capezio">capezio</label>
+                        <label htmlFor="capezio">capezio</label>
                         <input type="checkbox" id="capezio" name="capezio" value="capezio" onClick={this.onClick("brand")}/>
                     <button onClick={this.onSubmit}>Submit</button>
                 </form>
@@ -130,7 +130,7 @@ class Filter extends Component{
 }
 
 const FiltItemsList = (props) =>{
-    
+
     console.log(props)
 
     return(
