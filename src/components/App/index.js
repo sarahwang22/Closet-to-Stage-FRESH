@@ -11,6 +11,7 @@ import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import ItemPage from '../ItemPage'
 import Form from '../ItemForm'
+import Filter from '../Filter'
 
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
@@ -53,6 +54,7 @@ const App = () => (
       <Route exact path={ROUTES.ADMIN} component={AdminPage} />
       <Route exact path={ROUTES.ITEM_PAGE} component={ItemPage} />
       <Route exact path="/itemform" component = {Form} />
+      <Route exact path="/filter" component = {Filter} />
     </div>
   </Router>
 );

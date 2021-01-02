@@ -4,10 +4,14 @@ class Filter extends Component{
     constructor(props){
         super(props)
         this.state={
-            type:{}, //type: {dress: true, top: false, ...}
-            brand:{},
+            filters:{
+                type:{}, //type: {dress: true, top: false, ...}
+                brand:{},
+            },
+            filtItemsList:[],
         }
     }
+
     onClick = (spec) => (event) => { //can't push an item to state (can't mutate), should use concat
         // spec is type, brand, etc.
 
@@ -15,52 +19,97 @@ class Filter extends Component{
 
         if(checkbox.checked) { // {list:{dress: true}}
             this.setState({
-                [spec]:{
-                    ...this.state[spec],
-                    [event.target.name]: true
+                filters:{
+                    ...this.state.filters, //used ... before new addition instead of after and worked
+                    [spec]:{
+                        ...this.state.filters[spec],
+                        [event.target.name]: true
+                    },
                 }
             })
         }
         else{
             this.setState({ // {list:{dress: false}}
-                [spec]:{
-                    ...this.state[spec],
-                    [event.target.name]: false
-                }
+                filters:{
+                    ...this.state.filters,
+                    [spec]:{
+                        ...this.state.filters[spec],
+                        [event.target.name]: false
+                    },     
+                }  
             })
         }
 
-        console.log(this.state)
-
-
+        console.log('old state: ',this.state)
        /*  this.setState(state =>{
             const list = state[spec].concat(event.target.value)
-
             return {
                 [spec]: list,
             }
         })
         */
+    }
+
+    onSubmit = (event) => {
+        /*
+            brand(spec): (specObj){
+                costco(key): true(value),
+                capezio: false,
+            }
+         */
+        Object.entries(this.state.filters).map(([spec, specObj]) =>{
+            console.log(spec, specObj)
+
+            let querySpec =[];
+
+            Object.entries(specObj).map(([key,value]) => {
+                if(value)
+                    querySpec.push(key)
+                //console.log(querySpec)
+                //querySpec is an array that holds all of the specs want to query for,
+                //within a certain field, like brand or type
+            })
+            console.log(querySpec)
+
+            //queries with filter arrays
+            //where('brand', 'in', [costco, capezio, ...])
+             this.props.firebase.items().where(spec,'in', querySpec)
+                .get()
+                .then(snapshot => {
+                    snapshot.forEach(doc=>{
+
+                        /* this.setState(state=>{
+                            const list = state.filtItemsList.concat({itemID: doc.id, ...doc.data()})
+
+                            return({
+                                ...state,
+                                filtItemsList:list
+                            })
+                        }) */
+                        
+                    })
+
+                })   
+        }
+        )
+
+        console.log('onSubmit state: ',this.state)
+
+        event.preventDefault()
         
     }
 
-    onSubmit = () => {
-        let querySpec = [];
-
-        Object.entries(this.state).map(([spec, specObj]) =>{
-            
-
-        }   
-        )
-    }
-
     render(){
+        const {filters, filtItemsList} = this.state
+
+        console.log('filters.type.dress:', filters.type.dress)
+
         return(
             <div>
                 <form>
                     <h5>type</h5>
                         <label for="dress">dress</label>
-                        <input class="type" type="checkbox" id="dress" name="dress" value="dress" onClick={this.onClick("type")}/>
+                        <input class="type" type="checkbox" id="dress" name="dress" value="dress" checked={!!filters.type.dress} onClick={this.onClick("type")}/>
                         <label for="bottom">bottom</label>
                         <input class="type" type="checkbox" id="bottom" name="bottom" value="bottom" onClick={this.onClick("type")}/>
                         <label for="top">top</label>
@@ -70,10 +119,24 @@ class Filter extends Component{
                         <input type="checkbox" id="coscto" name="costco" value="costco" onClick={this.onClick("brand")}/>
                         <label for="capezio">capezio</label>
                         <input type="checkbox" id="capezio" name="capezio" value="capezio" onClick={this.onClick("brand")}/>
+                    <button onClick={this.onSubmit}>Submit</button>
                 </form>
+                <FiltItemsList items = {filtItemsList}/>
             </div>
         )
     }
+}
+
+const FiltItemsList = (props) =>{
+    console.log(props)
+
+    return(
+        <div>
+            {props.items.map(item=> {
+                <h1>{item.itemID}</h1>
+            })}
+        </div>
+    )
 }
 
 export default Filter
