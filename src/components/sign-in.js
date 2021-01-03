@@ -26,6 +26,10 @@ const INITIAL_STATE = {
 	status: null,
 }
 
+/**
+ * Component for the user sign in form. 
+ * Redirects to the user homepage upon success.
+ */
 class SignInForm extends React.Component {
 	constructor(props) {
 		super(props);
@@ -39,7 +43,7 @@ class SignInForm extends React.Component {
 		const { email, password } = this.state;
 
 		tryAuthSignIn(email, password)
-			.then((credential) => { // user signed in at this point
+			.then(() => { // user signed in at this point
 				// redirect on next render()
 				this.setState({ ...INITIAL_STATE, status: 'SUCCESS' });
 			})

@@ -1,9 +1,9 @@
 import React from 'react';
 
-import firebase from './app';
+import firebaseApp from './app';
 import { tryDbSubscribeUser } from './db';
 
-const auth = firebase.auth();
+const auth = firebaseApp.auth();
 
 class AuthState {
 	constructor(authState = {}) {
@@ -41,12 +41,12 @@ export function asAuthProvider(Component) {
 			this.unsubscribeAuth = auth.onAuthStateChanged(authUser => {
 				if (authUser) {
 					this.setState({ authUser });
-					// if authenticated, also watch user's roles in Firestore
+					// if authenticated, also watch user's roles in firestore
 					this.unsubscribeRoles && this.unsubscribeRoles();
 					this.unsubscribeRoles = tryDbSubscribeUser(
 						authUser.uid,
 						dbUser => {
-							// copy new roles into dbRoles
+							// on snapshot, copy new roles into dbRoles
 							this.setState({ dbRoles: { ...dbUser.roles } });
 						}
 					);
@@ -76,14 +76,15 @@ export function asAuthProvider(Component) {
 /**
  * Make a component require user authentication and, optionally, a set of
  * user roles before rendering; otherwise, render null.
+ * In the former case, also endow the target component with the current uid.
  * 
  * @param {React.ComponentType} Component the component to wrap
- * @param {string[]} roles required user roles, if any; check if at least one matches
+ * @param {string[]} roles required user roles, if any; check if at least one satisfied
  * @returns {React.ComponentType} a component which renders the original Component
  * if auth check passes, and null otherwise
  */
-export function withAuthProtection(Component, roles = []) {
-	return (props) => (
+export function withAuthorization(Component, roles = []) {
+	return props => (
 		<AuthUserContext.Consumer>
 			{authState => {
 				const { authUser, dbRoles } = authState;
@@ -91,6 +92,7 @@ export function withAuthProtection(Component, roles = []) {
 				if (!authUser) {
 					return null;
 				}
+				props = { ...props, uid: authUser.uid }; // add uid to props
 				// check if there are roles to meet
 				if (roles.length === 0) {
 					return <Component {...props} />;
@@ -112,6 +114,7 @@ export function withAuthProtection(Component, roles = []) {
 
 /**
  * Attempt to create a new Firebase user.
+ * Upon success, user is automatically signed in.
  * 
  * @param {string} email the desired email
  * @param {string} password the desired password

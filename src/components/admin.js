@@ -1,23 +1,27 @@
 import React from 'react';
 
-import { withAuthProtection } from './firebase/auth';
+import { withAuthorization } from './firebase/auth';
 import { tryDbGetAllUsers } from './firebase/db';
 import * as ROLES from '../constants/roles';
 
+/**
+ * Utility page for users with the 'admin' role.
+ * Displays a list of all users.
+ */
 class AdminPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			users: [],
-			loading: true,
-		};
+		this.state = { ...AdminPage.INITIAL_STATE };
 	}
+
+	static INITIAL_STATE = {
+		users: null,
+		loading: true,
+	};
 
 	componentDidMount() {
 		tryDbGetAllUsers()
-			.then(users => {
-				this.setState({ users });
-			})
+			.then(users => this.setState({ users }))
 			.then(() => this.setState({ loading: false }))
 			.catch(error => alert(error.message));
 	}
@@ -34,8 +38,12 @@ class AdminPage extends React.Component {
 		);
 	}
 }
-export default withAuthProtection(AdminPage, [ROLES.ADMIN]);
+export default withAuthorization(AdminPage, [ROLES.ADMIN]);
 
+/**
+ * Component to render a list of users.
+ * Requires a prop 'users': string[].
+ */
 const UserList = ({ users }) => (
 	<ul>
 		{users.map(user => {

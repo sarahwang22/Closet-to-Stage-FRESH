@@ -1,5 +1,5 @@
 import React from 'react'
-import { withAuthProtection } from './firebase/auth';
+import { withAuthorization } from './firebase/auth';
 
 /**
  * Dashboard for authenticated users.
@@ -12,4 +12,4 @@ const HomePage = () => {
 		</div>
 	)
 }
-export default withAuthProtection(HomePage);
+export default withAuthorization(HomePage);

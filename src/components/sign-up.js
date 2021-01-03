@@ -39,6 +39,10 @@ const INITIAL_STATE = {
 	status: null,
 }
 
+/**
+ * Component for the user sign up form.
+ * Automatically signs the user in and redirects to their homepage.
+ */
 class SignUpForm extends React.Component {
 	constructor(props) {
 		super(props);
