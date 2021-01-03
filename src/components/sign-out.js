@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { trySignOut } from './firebase/auth';
+import { tryAuthSignOut } from './firebase/auth';
 import * as ROUTES from '../constants/routes';
 
 /**
@@ -17,7 +17,7 @@ export default class SignOutButton extends React.Component {
 	onClick = () => {
 		this.setState({ status: 'Signing out...' }); // lock out the button
 
-		trySignOut()
+		tryAuthSignOut()
 			.then(() => {
 				// redirect on next render()
 				this.setState({ status: 'SUCCESS' });

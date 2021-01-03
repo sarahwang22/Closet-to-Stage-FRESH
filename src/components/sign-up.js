@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
-import { tryCreateUser } from './firebase/auth';
-import { dbGetUser } from './firebase/db';
+import { tryAuthCreateUser } from './firebase/auth';
+import { DbUser, tryDbCreateUser } from './firebase/db';
 
 import * as ROUTES from '../constants/routes';
 
@@ -52,14 +52,14 @@ class SignUpForm extends React.Component {
 		const { username, email, passwordOne } = this.state;
 		const roles = []; // TODO make additional user roles if needed
 
-		tryCreateUser(email, passwordOne)
+		tryAuthCreateUser(email, passwordOne)
 			.then(credential => { // user signed in at this point
-				return dbGetUser(credential.user.uid) // add user to database
-					.set({
-						username,
-						email,
-						roles,
-					}, { merge: true });
+				// create user in Firestore
+				return tryDbCreateUser(credential.user.uid, new DbUser({
+					username,
+					email,
+					roles,
+				}));
 			})
 			.then(() => {
 				// redirect on next render()
@@ -86,7 +86,7 @@ class SignUpForm extends React.Component {
 
 		let isInvalid = false;
 		let statusMsg = '';
-		if(status === 'SUCCESS') { // done with the form, leave
+		if (status === 'SUCCESS') { // done with the form, leave
 			return <Redirect to={ROUTES.HOME} />;
 		} else if (status) { // don't allow submission when status nontrivial
 			isInvalid = true;

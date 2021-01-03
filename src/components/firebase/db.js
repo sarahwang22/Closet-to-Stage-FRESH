@@ -3,17 +3,71 @@ import firebase from './app';
 const db = firebase.firestore();
 
 /**
- * Get the Firestore document associated with a user.
- * 
- * @param {string} uid the user's uid/document name
+ * User representation in Firestore.
  */
-export function dbGetUser(uid) {
-	return db.doc(`users/${uid}`);
+export class DbUser {
+	constructor(dbUser = {}) {
+		this.username = dbUser.username;
+		this.email = dbUser.email;
+		this.roles = dbUser.roles;
+	}
 }
 
 /**
- * Get Firestore collection for all users.
+ * Converter for using DbUser with Firebase users collection.
  */
-export function dbGetAllUsers() {
-	return db.collection('users');
+const dbUserConverter = {
+	toFirestore: dbUser => {
+		return { ...dbUser };
+	},
+	fromFirestore: (snapshot, options) => {
+		const data = snapshot.data(options);
+		return new DbUser(data);
+	},
+};
+
+/**
+ * Attempt to create a user in Firestore.
+ * 
+ * @param {string} uid the user's desired uid/document name
+ * @param {DbUser} dbUser the user's desired properties
+ * @returns a promise to the completion
+ */
+export function tryDbCreateUser(uid, dbUser) {
+	return db.doc(`users/${uid}`).withConverter(dbUserConverter)
+		.set(dbUser);
+}
+
+/**
+ * Attempt to get a user from Firestore.
+ * 
+ * @param {string} uid the user's uid/document name
+ * @returns a promise to the returned DbUser object
+ */
+export function tryDbGetUser(uid) {
+	return db.doc(`users/${uid}`).withConverter(dbUserConverter).get()
+		.then(snapshot => snapshot.data());
+}
+
+/**
+ * Attempt to get array of all users from Firestore.
+ * 
+ * @returns a promise to the returned DbUser array
+ */
+export function tryDbGetAllUsers() {
+	return db.collection('users').withConverter(dbUserConverter).get()
+		.then(snapshot => snapshot.docs.map(doc => doc.data()));
+}
+
+/**
+ * Attempt to subscribe to a user's Firestore document,
+ * invoking some callback on updates.
+ * 
+ * @param {string} uid the user's uid/document name
+ * @param {(dbUser: DbUser) => void} callback the on snapshot callback
+ * @returns the unsubscribe callback
+ */
+export function tryDbSubscribeUser(uid, callback) {
+	return db.doc(`users/${uid}`).withConverter(dbUserConverter)
+		.onSnapshot(snapshot => callback(snapshot.data()));
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { trySignIn } from './firebase/auth';
+import { tryAuthSignIn } from './firebase/auth';
 import { SignUpLink } from './sign-up';
 import { PasswordForgetLink } from './pw-forget';
 
@@ -38,7 +38,7 @@ class SignInForm extends React.Component {
 
 		const { email, password } = this.state;
 
-		trySignIn(email, password)
+		tryAuthSignIn(email, password)
 			.then((credential) => { // user signed in at this point
 				// redirect on next render()
 				this.setState({ ...INITIAL_STATE, status: 'SUCCESS' });
@@ -58,7 +58,7 @@ class SignInForm extends React.Component {
 
 		let isInvalid = false;
 		let statusMsg = '';
-		if(status === 'SUCCESS') { // done with the form, leave
+		if (status === 'SUCCESS') { // done with the form, leave
 			return <Redirect to={ROUTES.HOME} />;
 		} else if (status) { // don't allow submission when status nontrivial
 			isInvalid = true;

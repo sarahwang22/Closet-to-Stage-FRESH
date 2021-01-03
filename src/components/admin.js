@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { withAuthProtection } from './firebase/auth';
-import { dbGetAllUsers } from './firebase/db';
+import { tryDbGetAllUsers } from './firebase/db';
 import * as ROLES from '../constants/roles';
 
 class AdminPage extends React.Component {
@@ -14,14 +14,11 @@ class AdminPage extends React.Component {
 	}
 
 	componentDidMount() {
-		let users = [];
-		dbGetAllUsers().get()
-			.then(snapshot => {
-				snapshot.forEach(doc => {
-					users.push({ uid: doc.id, ...doc.data() });
-				});
-				this.setState({ users, loading: false });
+		tryDbGetAllUsers()
+			.then(users => {
+				this.setState({ users });
 			})
+			.then(() => this.setState({ loading: false }))
 			.catch(error => alert(error.message));
 	}
 

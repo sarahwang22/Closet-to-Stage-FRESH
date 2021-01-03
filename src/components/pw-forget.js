@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
-import { trySendPasswordReset } from './firebase/auth';
+import { tryAuthSendPasswordReset } from './firebase/auth';
 import * as ROUTES from '../constants/routes';
 
 const PasswordForgetPage = () => (
@@ -38,7 +38,7 @@ class PasswordForgetForm extends React.Component {
 
 		const { email } = this.state;
 
-		trySendPasswordReset(email)
+		tryAuthSendPasswordReset(email)
 			.then(() => {
 				// redirect on next render()
 				this.setState({ ...INITIAL_STATE, status: 'SUCCESS' });
