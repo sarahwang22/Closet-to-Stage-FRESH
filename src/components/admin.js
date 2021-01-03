@@ -39,7 +39,6 @@ export default withAuthProtection(AdminPage, [ROLES.ADMIN]);
 const UserList = ({ users }) => (
 	<ul>
 		{users.map(user => {
-			console.log(user.username)
 			return (
 				<li key={user.uid}>
 					{user.uid}: {user.username}, {user.email}

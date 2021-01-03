@@ -5,7 +5,7 @@ import { tryDbSubscribeUser } from './db';
 
 const auth = firebase.auth();
 
-export class AuthState {
+class AuthState {
 	constructor(authState = {}) {
 		this.authUser = authState.authUser;
 		this.dbRoles = authState.roles;

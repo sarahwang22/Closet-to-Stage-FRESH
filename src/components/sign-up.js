@@ -50,7 +50,7 @@ class SignUpForm extends React.Component {
 		this.setState({ status: 'Submitting...' }); // lock out the form in render()
 
 		const { username, email, passwordOne } = this.state;
-		const roles = []; // TODO make additional user roles if needed
+		const roles = {}; // TODO make additional user roles if needed
 
 		tryAuthCreateUser(email, passwordOne)
 			.then(credential => { // user signed in at this point

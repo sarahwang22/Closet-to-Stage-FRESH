@@ -4,9 +4,11 @@ const db = firebase.firestore();
 
 /**
  * User representation in Firestore.
+ * Includes a field 'uid' which is the Firestore document name.
  */
 export class DbUser {
 	constructor(dbUser = {}) {
+		this.uid = dbUser.uid;
 		this.username = dbUser.username;
 		this.email = dbUser.email;
 		this.roles = dbUser.roles;
@@ -18,11 +20,15 @@ export class DbUser {
  */
 const dbUserConverter = {
 	toFirestore: dbUser => {
-		return { ...dbUser };
+		return {
+			username: dbUser.username,
+			email: dbUser.email,
+			roles: dbUser.roles,
+		};
 	},
 	fromFirestore: (snapshot, options) => {
 		const data = snapshot.data(options);
-		return new DbUser(data);
+		return new DbUser({ uid: snapshot.id, ...data });
 	},
 };
 
