@@ -1,3 +1,8 @@
+.item a{
+    color:black,
+}
+
+
 ul{
     margin:0;
     padding:0;
@@ -19,4 +24,4 @@ li{
     height: 20em;
     border: solid 1px black;
     margin: 10px;
-}
+} 

@@ -8,7 +8,7 @@ li {
 
 li a{
     display: block; /*blocks take up full width*/
-    color: white;
+    color: blue;
     margin:0;
     padding:1rem;
     text-decoration: none;

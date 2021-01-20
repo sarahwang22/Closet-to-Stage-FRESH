@@ -12,6 +12,7 @@ import AdminPage from '../Admin';
 import ItemPage from '../ItemPage'
 import Form from '../ItemForm'
 import Filter from '../Filter'
+import Item from '../Item'
 
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
@@ -55,6 +56,8 @@ const App = () => (
       <Route exact path={ROUTES.ITEM_PAGE} component={ItemPage} />
       <Route exact path="/itemform" component = {Form} />
       <Route exact path="/filter" component = {Filter} />
+      <Route exact path="/items/:itemID" component = {Item}/> {/*':' allows Item to access itemID */}
+      <Route exact path="/items/:type?/:color?/brand?:" component={FiltItemsPage}></Route>
     </div>
   </Router>
 );

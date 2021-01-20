@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {compose} from 'recompose'
+import {BrowserRouter as Router, Link} from "react-router-dom"
 
 import { withFirebase } from '../Firebase';
 import {withAuthorization} from '../Session'
@@ -65,14 +66,16 @@ class AdminPage extends Component {
       console.log(users)
 
     return (
-      <div>
-        <h1>Admin</h1>
-        <p>The Admin Page is accessible by every signed in admin user</p>
-        
-        {loading && <p>Loading...</p>}
-        
-        <UserList users={users} />
-      </div>
+        <div>
+          <h1>Admin</h1>
+          <p>The Admin Page is accessible by every signed in admin user</p>
+          
+          {loading && <p>Loading...</p>}
+          
+          <UserList users={users} />
+          <Link to="/home">Go home</Link>
+        </div>
+      
     );
   }
 }
@@ -88,10 +91,9 @@ const UserList = ({users}) => {
           {user.uid}: {user.username}, {user.email}
         </li>
       )
-      
     }
-        
     )}
+    <Link>WHY</Link>
   </ul>
   )
 }

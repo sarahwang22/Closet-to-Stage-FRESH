@@ -120,6 +120,17 @@ class Form extends Component {
           onChange={this.onChange}
           placeholder="color"
         />
+        <div className="color">
+            <input type="checkbox" id="red"/>
+            <input type="checkbox" id="orange"/>
+            <input type="checkbox" id="yelllow"/>
+            <input type="checkbox" id="green"/>
+            <input type="checkbox" id="blue"/>
+            <input type="checkbox" id="purple"/>
+            <input type="checkbox" id="black"/>
+            <input type="checkbox" id="tan"/>
+            <input type="checkbox" id="white"/>
+        </div>
         <br />
         <input
           name="size"

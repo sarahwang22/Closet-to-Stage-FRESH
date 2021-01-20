@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {BrowserRouter as Router, Link, Redirect} from "react-router-dom"
 
 import {withFirebase} from '../Firebase'
 import SearchBar from '../SearchBar'
@@ -11,10 +12,10 @@ import "./itempage.css"
 const ItemPage =()=>{
     return(
         <div>
-            <h3>Items Page</h3>
-            <SearchBar />
-            <Filter />
-            <Items />
+                <h3>Items Page</h3>
+                <SearchBar />
+                <Filter />
+                <Items /> 
         </div>
     )
 }
@@ -87,7 +88,6 @@ const ItemsList = (props) =>(
                 </li>
             ))}
         </ul>
-       
     </div>
 ) 
 
@@ -102,7 +102,9 @@ const Item=(props)=>{
             <h3 style={{backgroundColor:`${props.item.color}`}}>color: {props.item.color} </h3>
             <h5>itemID: {props.item.itemID}</h5> 
             <p>userID: {props.item.userID} [prof pic]</p>
+            <Link to={{pathname: `/items/${props.item.itemID}`}}>view</Link>
         </div>
+        
     )
 }
 
