@@ -10,6 +10,7 @@ import HomePage from '../Home';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import ItemPage from '../ItemPage'
+import ItemPage2 from '../ItemPage2'
 import Form from '../ItemForm'
 import Filter from '../Filter'
 import Item from '../Item'
@@ -54,10 +55,11 @@ const App = () => (
       <Route exact path={ROUTES.ACCOUNT} component={AccountPage} />
       <Route exact path={ROUTES.ADMIN} component={AdminPage} />
       <Route exact path={ROUTES.ITEM_PAGE} component={ItemPage} />
+      <Route exact path={'/item-page2'} component={ItemPage2} />
       <Route exact path="/itemform" component = {Form} />
       <Route exact path="/filter" component = {Filter} />
       <Route exact path="/items/:itemID" component = {Item}/> {/*':' allows Item to access itemID */}
-      <Route exact path="/items/:type?/:color?/brand?:" component={FiltItemsPage}></Route>
+      <Route exact path="/items/:type?/:color?/brand?:" component={Filter}></Route>
     </div>
   </Router>
 );
