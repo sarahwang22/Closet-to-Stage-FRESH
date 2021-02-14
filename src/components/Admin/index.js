@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {compose} from 'recompose'
-import {BrowserRouter as Router, Link} from "react-router-dom"
+import {Link} from "react-router-dom"
 
 import { withFirebase } from '../Firebase';
 import {withAuthorization} from '../Session'

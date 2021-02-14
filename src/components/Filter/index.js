@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import {compose} from 'recompose'
-import { withRouter, Redirect } from 'react-router-dom'
+import { withRouter, Link} from 'react-router-dom'
 //must use withRouter in order to use this.props.history.push("/path")
 
 import {withFirebase} from '../Firebase'
+
 
 class Filter extends Component{
     constructor(props){
@@ -13,25 +14,28 @@ class Filter extends Component{
                 type:{}, //type: {dress: true, top: false, ...}
                 brand:{},
             },
-            filtItemsIDs:[],
         }
     }
 
+
     onClick = (spec) => (event) => { //can't push an item to state (can't mutate), should use concat
         // spec is type, brand, etc.
-        
-        const checkbox = document.getElementById(event.target.id)
+        const id = event.target.id
+        const name = event.target.name
+
+        const checkbox = document.getElementById(id)
 
         if(checkbox.checked) { // {list:{dress: true}}
-            this.setState({
+            this.setState( {
                 filters:{
                     ...this.state.filters, //used ... before new addition instead of after and worked
                     [spec]:{
                         ...this.state.filters[spec],
-                        [event.target.name]: true
+                        [name]: true
                     },
                 }
-            })
+                }
+            )
         }
         else{
             this.setState({ // {list:{dress: false}}
@@ -46,16 +50,10 @@ class Filter extends Component{
         }
 
         console.log('old state: ',this.state)
-       /*  this.setState(state =>{
-            const list = state[spec].concat(event.target.value)
-            return {
-                [spec]: list,
-            }
-        })
-        */
+      
     }
 
-    onSubmit = (event) => {
+    onSubmit = (event) => { //happens everytime you click submit
         /*
             brand(spec): (specObj){
                 costco(key): true(value),
@@ -65,74 +63,66 @@ class Filter extends Component{
             querySpec ==> ['costco']
 
          */
-        Object.entries(this.state.filters).map(([spec, specObj]) =>{
-            console.log(spec, specObj)
+        let itemsList = [];
+        let promises = [];
+
+        Object.entries(this.state.filters).map(([spec, specObj]) =>{//for every spec and its specObj, loops through brands:{}, type:
 
             let querySpec =[];
 
             Object.entries(specObj).map(([key,value]) => {
-                if(value)
+                if(value) //if dress: true
                     querySpec.push(key)
-                //console.log(querySpec)
+    
                 //querySpec is an array that holds all of the specs want to query for,
                 //within a certain field, like brand or type
             })
-            console.log(querySpec)
 
             //queries with filter arrays
             //where('brand', 'in', [costco, capezio, ...])
             if(querySpec.length > 0){
-                this.props.firebase.items().where(spec,'in', querySpec)
+                let promise = this.props.firebase.items().where(spec,'in', querySpec)
                 .get()
                 .then(snapshot => {
                     snapshot.forEach(doc=>{
+                        if(doc.data().isListed){
+                            const found = itemsList.some(il => il.itemID === doc.id)
 
-                        this.setState(state=>{
-                            /* const filtItem = {itemID: doc.id, ...doc.data()}//probably need to fix with .where, somehow
-
-                            let list =[]
-
-                            if(!this.state.filtItemsList.includes(filtItem))
-                                list = state.filtItemsList.concat(filtItem) */
-                            /*const addition = [{itemID: doc.id, ...doc.data()}]
-                            const oldList = state.filtItemsList
-                            let newList = oldList.concat(addition)
-                            not working, trying to makie a unique array
-                            */
-
-                            //newList = [...new Set([...oldList,...addition])]
-                            
-                            const addition = [doc.id]
-                            const oldList = state.filtItemsIDs
-
-                            let newIDs = addition.concat(oldList)
-
-                            newIDs = [...new Set([...addition, ...oldList])]
-
-
-                            return({
-                                ...state,
-                                filtItemsIDs: newIDs,
-                            })
-                        }) 
-                        
+                            if(!found){
+                                itemsList.push({itemID: doc.id, ...doc.data()})
+                            } 
+                        } 
                     })
-
-                })   
-
-            }
-        }
-        )
+                }) 
+                promises.push(promise)  
+            }}
+        )// after everythings been looped through and filtitemsids is unique
 
         console.log('onSubmit state: ',this.state)
+
+        Promise.all(promises).then(() => {
+            this.props.handleSearchResultsChange(itemsList)
+        })
 
         event.preventDefault()
         
     }
 
-    routeChange = () => {
-        
-        this.props.history.push("/new/page") //better than Redirect (which doesn't work here anyway)
+    routeChange = () => { //just for testing
+        //<Link to="/new/page"></Link>
+        const {filters: {brand:{capezio}, type:{dress}}} = this.state //testing things out, this doesn't actually work
+
+        this.props.history.push(`/items/${capezio}/${dress}`) //better than Redirect (which doesn't work here anyway)
+    }
+
+    doFirebase = () => {
+        const {filtItemsIDs} = this.state
+
+        let item = {}
+
+        this.props.firebase.where('id', 'in', filtItemsIDs).get().then(snapshot => {
+
+        })
     }
 
     render(){
@@ -156,25 +146,12 @@ class Filter extends Component{
                         <input type="checkbox" id="capezio" name="capezio" value="capezio" onClick={this.onClick("brand")}/>
                     <button onClick={this.onSubmit}>Submit</button>
                 </form>
-                <FiltItemsList itemIDs = {filtItemsIDs}/>
-                <h1>hello</h1>
+
             </div>
         )
     }
 }
 
-const FiltItemsList = (props) =>{
-    console.log(props)
-    return(
-        <div>
-            <ul>
-                {props.itemIDs.map(id=> 
-                    <li>{id}, </li>
-                )}
-            </ul>
-        </div>
-    )
-}
 
 export default compose( //have to use compose to use both withRouter and withFirebase (something about props)
     withRouter,

@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 
 import { withFirebase } from '../Firebase';
 import {withAuthorization} from '../Session'
-import {withAuthentication} from '../Session'
+
 
 
 const INITIAL_STATE={
@@ -41,7 +41,7 @@ class Form extends Component {
   }
 
   onChange = event =>{
-    const {item} = this.state
+    
     this.setState({
         item:{
           ...this.state.item,

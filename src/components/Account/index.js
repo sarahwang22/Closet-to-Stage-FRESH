@@ -28,7 +28,7 @@ class AccountPage extends Component {
         var cuid = cuser.uid;
         //console.log(cuid)
         
-        this.unsubscribe = this.props.firebase.user(cuid)
+        this.unsubscribeUser = this.props.firebase.user(cuid)
           .onSnapshot(snapshot => { //or change back to .get
             if(snapshot){//need???
               this.setState({
@@ -39,7 +39,7 @@ class AccountPage extends Component {
             }  
           })
 
-          this.props.firebase.items().where('userID','==',cuid)
+          this.unsubscribeItems = this.props.firebase.items().where('userID','==',cuid)
             .onSnapshot(querySnapshot => {
               let userItems = []
               if(querySnapshot.empty){
@@ -59,58 +59,12 @@ class AccountPage extends Component {
 
             })
 
-          //check if the snapshot is empty
-          
-          /* this.props.firebase.user(cuid) //how to get data once
-            .get()
-            .then(doc=>{
-              //console.log(doc.data())
-            }) 
-
-            this.props.firebase.userItems(cuid) //collection, not a doc
-              .get()
-              .then(snapshot=>{
-                let userItems =[]
-
-                snapshot.forEach(doc => {
-                  userItems.push({itemID: doc.id, ...doc.data()})
-                })
-                
-                
-                //console.log(userItems)
-
-                this.setState({userItems})
-              }) */
-
-        /* this.props.firebase.user(cuid).on("value", snapshot => {
-            const userObject = snapshot.val();
-            
-            const userObjectItems = userObject["items"]
-
-            if(userObjectItems){
-              const allItemsRef = this.props.firebase.items()
-
-              allItemsRef.on('value', snapshot =>{
-                const allItemsObject = snapshot.val()
-
-                const itemsList = Object.keys(userObjectItems).map((itemID)=>({
-                    ...allItemsObject[itemID],
-                    itemID: itemID
-                }))
-
-                this.setState({userItems: itemsList})
-                console.log(this.state.userItems)
-
-              })
-            }
-            this.setState({user: userObject, loading: false, })
-        }
-        ) */
     }
   }
  
   componentWillUnmount() {
-      this.unsubscribe()
+      this.unsubscribeUser()
+      this.unsubscribeItems()
       //this.props.firebase.users().off()//removes the listener??? or user().off()
   }
   render() {

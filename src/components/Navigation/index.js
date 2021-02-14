@@ -41,6 +41,9 @@ const NavigationAuth = () =>( //use parentheses not bracket dumb b
         <Link to="/itemform">ItemForm BETA</Link>
       </li>
       <li>
+        <Link to="/test">Test</Link>
+      </li>
+      <li>
         <SignOutButton />
       </li>
     </ul>
