@@ -11,7 +11,7 @@ import AccountPage from '../user/Account';
 import AdminPage from '../user/Admin';
 import ItemPage from '../pages/ItemPage'
 import Form from '../items/ItemForm'
-import Filter from '../items/Filter'
+import Filter from '../pages/Filter'
 import Item from '../items/Item'
 import NewFilterPage from '../z-Test'
 
@@ -24,17 +24,17 @@ const App = () => (
   <Router>
     <div>
       <header>
-      {/* <div class="measurements">
+      {/* <div className="measurements">
           <div>
-            <div class="first"></div> 
+            <div className="first"></div> 
             <h5>30px(1.8rem)</h5>
           </div>
           <div>
-            <div class="second"></div> 
+            <div className="second"></div> 
             <h5>50px(3.1rem)</h5>
           </div>
           <div>
-            <div class="third"></div> 
+            <div className="third"></div> 
             <h5>100px(6.6rem)</h5>
           </div>
         </div> */}
@@ -59,7 +59,7 @@ const App = () => (
       <Route exact path={ROUTES.ACCOUNT} component={AccountPage} />
       <Route exact path={ROUTES.ADMIN} component={AdminPage} />
       <Route exact path={ROUTES.ITEM_PAGE} component={ItemPage} />
-      <Route exact path={'/item-page2'} component={ItemPage2} />
+      {/* <Route exact path={'/item-page2'} component={ItemPage2} /> */}
       <Route exact path="/itemform" component = {Form} />
       <Route exact path="/filter" component = {Filter} />
       <Route exact path="/items/:itemID" component = {Item}/> {/*':' allows Item to access itemID */}

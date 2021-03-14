@@ -53,7 +53,7 @@ class ItemPageBase extends Component{
                 {/*loading status, make sure to change componentdidmount too*/}
                 {/* TODO: <SearchBar /> */}
                 <div className="path"><p>path</p></div>
-                <Filter handleSearchResultsChange = {this.handleSearchResultsChange}/> {/*changes state in ItemPage*/}
+                <Filter handleSearchResultsChange = {this.handleSearchResultsChange} itemsList={itemsList}/> {/*changes state in ItemPage*/}
                 <div className="items-list">
                     <div className="category">
                         <h3>Category</h3>

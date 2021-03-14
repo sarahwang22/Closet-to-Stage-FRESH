@@ -15,8 +15,7 @@ ReactDOM.render(
     <App />
 </FirebaseContext.Provider>
 
-    
-    , document.getElementById('root'));
+, document.getElementById('root'));
  
 //serviceWorker.unregister();
 

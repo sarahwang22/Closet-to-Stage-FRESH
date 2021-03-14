@@ -9,7 +9,7 @@ import {AuthUserContext} from '../Session'
 import './navigation.css'
 
 const Navigation = () => (
-    <div class="nav">
+    <div className="nav">
       <AuthUserContext.Consumer>
         {authUser => //can replace with authUser
           authUser ? <NavigationAuth /> : <NavigationNonAuth />
@@ -56,9 +56,9 @@ const NavigationNonAuth = () =>(
       <li>
         <Link to={ROUTES.ITEM_PAGE}>ItemPage</Link>
       </li>
-      <li>
+      {/* <li>
         <Link to={'/item-page2'}>ItemPage2</Link>
-      </li>
+      </li> */}
       <li>
         <Link to={ROUTES.SIGN_IN}>Sign In</Link>
       </li>

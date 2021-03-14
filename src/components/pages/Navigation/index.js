@@ -43,7 +43,7 @@ const NavigationAuth = () =>( //use parentheses not bracket dumb b
       </ul>
     </div>
     <div className="account-links">
-      <li style={{float:"right"}}>
+      <li className="sign-out">
         <SignOutButton />
       </li>
       <li>

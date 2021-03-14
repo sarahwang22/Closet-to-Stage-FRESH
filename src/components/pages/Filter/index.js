@@ -10,10 +10,8 @@ class Filter extends Component{
     constructor(props){
         super(props)
         this.state={
-            filters:{
-                type:{}, //type: {dress: true, top: false, ...}
-                brand:{},
-            },
+            type:{}, //type: {dress: true, top: false, ...}
+            brand:{},
         }
     }
 
@@ -24,37 +22,63 @@ class Filter extends Component{
         const name = event.target.name
 
         const checkbox = document.getElementById(id)
-
-        if(checkbox.checked) { // {list:{dress: true}}
-            this.setState( {
-                filters:{
-                    ...this.state.filters, //used ... before new addition instead of after and worked
-                    [spec]:{
-                        ...this.state.filters[spec],
-                        [name]: true
-                    },
-                }
-                }
-            )
-        }
-        else{
-            this.setState({ // {list:{dress: false}}
-                filters:{
-                    ...this.state.filters,
-                    [spec]:{
-                        ...this.state.filters[spec],
-                        [event.target.name]: false
-                    },     
-                }  
-            })
-        }
+        
+        this.setState({ 
+            [spec]:{
+                ...this.state[spec],
+                [name]: checkbox.checked
+            },
+           
+        }, this.updateItemsList) //callback function after setState
 
         console.log('old state: ',this.state)
       
     }
 
-    onSubmit = (event) => { //happens everytime you click submit
-        /*
+    updateItemsList = () => {
+        let itemsList = [];
+        let promises = [];
+
+        Object.entries(this.state).map(([spec, specObj]) =>{//for every spec and its specObj, loops through brands:{}, type:
+
+            let querySpec =[];
+
+            Object.entries(specObj).map(([key,value]) => {
+                if(value) //if dress: true
+                    querySpec.push(key)
+    
+                //querySpec is an array that holds all of the specs want to query for,
+                //within a certain field, like brand or type
+            })
+
+            //queries with filter arrays
+            //where('brand', 'in', [costco, capezio, ...])
+            if(querySpec.length > 0){
+                let promise = this.props.firebase.items().where(spec,'in', querySpec)
+                .get()
+                .then(snapshot => {
+                    snapshot.forEach(doc=>{
+                        if(doc.data().isListed){
+                            const found = itemsList.some(il => il.itemID === doc.id)
+
+                            if(!found){
+                                itemsList.push({itemID: doc.id, ...doc.data()})
+                            } 
+                        } 
+                    })
+                }) 
+                promises.push(promise)  
+            }}
+        )// after everythings been looped through and filtitemsids is unique
+
+        console.log('onSubmit state: ',this.state)
+
+        Promise.all(promises).then(() => {
+            this.props.handleSearchResultsChange(itemsList)
+        })
+    }
+    /* onSubmit = (event) => { //happens everytime you click submit
+        
             brand(spec): (specObj){
                 costco(key): true(value),
                 capezio: false,
@@ -62,7 +86,7 @@ class Filter extends Component{
 
             querySpec ==> ['costco']
 
-         */
+        
         let itemsList = [];
         let promises = [];
 
@@ -106,7 +130,7 @@ class Filter extends Component{
 
         event.preventDefault()
         
-    }
+    } */
 
     routeChange = () => { //just for testing
         //<Link to="/new/page"></Link>
@@ -151,8 +175,7 @@ class Filter extends Component{
                         <label htmlFor="capezio">capezio</label>
                         <input type="checkbox" id="capezio" name="capezio" value="capezio" onClick={this.onClick("brand")}/>
                     </div>
-
-                    <button onClick={this.onSubmit}>Submit</button>
+                    {/* <button onClick={this.onSubmit}>Submit</button> */}
                 </form>
             </div>
         )
