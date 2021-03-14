@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'; //what's the diff btwn this and 'app'
 import 'firebase/auth' //is this right? they used this.auth instead
 import 'firebase/firestore'
+import 'firebase/storage'
 
 
 //console.log(process.env.REACT_APP_API_KEY) //restart local program to see env changes
@@ -18,24 +19,27 @@ const firebaseConfig = {
   class Firebase {
       constructor(){
         firebase.initializeApp(firebaseConfig) //app.init
-
+        
         this.auth = firebase.auth() //app.auth()
         this.db = firebase.firestore() //app.database
+        this.storage = firebase.storage()
+      
+       
       }
       //*** Auth API ***
-      doCreateUserWithEmailAndPassword = (email, password) =>
+        doCreateUserWithEmailAndPassword = (email, password) =>
           this.auth.createUserWithEmailAndPassword(email, password)
       
-      doSignInWithEmailAndPassword =(email, password) =>
+        doSignInWithEmailAndPassword =(email, password) =>
           this.auth.signInWithEmailAndPassword(email, password)
       
-      doSignOut = () =>
+         doSignOut = () =>
           this.auth.signOut();
       
-      doPasswordReset = email =>
+        doPasswordReset = email =>
           this.auth.sendPasswordResetEmail(email)
       
-      doPasswordUpdate = password =>
+        doPasswordUpdate = password =>
           this.auth.currentUser.updatePassword(password) //why cureentUser???
       
           //**User API */
@@ -59,11 +63,14 @@ const firebaseConfig = {
         items = () =>
             this.db.collection('items') //creates a Ref
         //use parenthsis, not curly quotes for returning
+
+        itemChats = () => 
+            this.db.collection('itemChats')
         
         getAuth = () =>
             this.auth
 
-        getDb = () =>
+        db = () =>
             this.db
 
         doAddItem = (item) => {
@@ -111,9 +118,7 @@ const firebaseConfig = {
         /*Account API */
 
         getUserItems = () => {
-            return(
-                <div></div>
-            )
+           
         }
 
         //*** Merge Auth and DB User Api */

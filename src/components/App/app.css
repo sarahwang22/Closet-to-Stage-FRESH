@@ -1,16 +1,21 @@
 /*each rem is 16px (rem is for root directory font)*/
-header h1 {
-    text-align: center
+body {
+    background-color: white;
 }
 
-.measurements {
+.header-brand-name{
+    text-align: left;
+    padding: 0 2rem;
+}
+
+/* .measurements {
     display: flex;
     margin: 1.8rem 0rem;
     justify-content: space-around;
     text-align: center;
     align-items: center;
 }
-.measurements .first {
+.measurements .first{
     display: inline-block;
     height: 1.875rem;
     width: 30px;
@@ -30,4 +35,4 @@ header h1 {
     height: 6.6rem;
     width: 100px;
     background-color: blue;
-}
+} */
