@@ -31,6 +31,9 @@
     padding: 1rem 1rem 1rem 0rem;
 }
 
+.account-links li{
+    float:right;
+}
 .header-nav li a{
     display: block; /*blocks take up full width*/
     color: black;
@@ -43,5 +46,6 @@
 
 button {
     padding:0;
+    margin:0;
 }
 

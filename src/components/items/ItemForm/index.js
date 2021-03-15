@@ -22,7 +22,9 @@ const INITIAL_STATE={
     isListed: false, //or should it be false initially?
     error: null,
     imageAsFile:'',
-    imageAsUrl:'',
+    imageAsUrl: {
+      imgUrl: ''
+    },
   },
   userID: null,
 }
@@ -54,12 +56,46 @@ class Form extends Component {
   }
 
   onSumbit = event =>{
-    const {item, userID} = this.state
-    
-    this.props.firebase.doAddItem({...item, userID, isListed: true})
+    const {item, userID, imageAsFile} = this.state
+      event.preventDefault()
+    console.log('start of upload')
 
-    this.setState({...INITIAL_STATE})
-    event.preventDefault()
+    if(imageAsFile === ''){
+      console.error('not an image file')
+    }
+
+    const uploadTask = this.props.firebase.doAddImage(imageAsFile.name, imageAsFile)
+      
+      uploadTask.on('state-changed',
+        (snapshot) => {
+          
+          console.log(snapshot)
+        }, (err) => {
+
+          console.log(err)
+        }, () => {
+
+          this.props.firebase.images().child(imageAsFile.name).getDownloadURL()
+            .then(fireBaseUrl => {
+              
+              this.setState({
+                imageAsUrl: {
+                  ...this.state.imageAsUrl,
+                  imgUrl: fireBaseUrl,
+                }
+              })
+            })
+        }
+      )
+      
+      this.props.firebase.doAddItem({...item, userID, isListed: true})
+        .then(()=>{
+          console.log("added item")
+        })
+    
+     
+    
+    
   }
 
   onClear = event =>{
@@ -68,15 +104,18 @@ class Form extends Component {
 
   handleImageAsFile = (e) =>{
       const image = e.target.files[0]
+
       this.setState({
-        
+        ...this.state,
+          imageAsFile: image,
       })
   }
 
   render(){
-    const {item, error} = this.state;
+    const {item, error, imageAsUrl} = this.state;
 
     return(
+      <div>
       <form>
         <input
           name="itemName"
@@ -168,6 +207,8 @@ class Form extends Component {
         </button>
         <p>{error && `${error}`}</p>
       </form>
+      {imageAsUrl?<img src={imageAsUrl.imgUrl} alt="image tag"/> : <h1></h1>}
+      </div>
       
       )
   }

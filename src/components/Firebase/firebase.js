@@ -26,6 +26,16 @@ const firebaseConfig = {
       
        
       }
+        doAddImage = (name, file) => {
+            return(
+                this.storage.ref(`/images/${name}`).put(file)
+            )
+        }
+
+        images = () => (
+            this.storage.ref('images')
+        )
+
       //*** Auth API ***
         doCreateUserWithEmailAndPassword = (email, password) =>
           this.auth.createUserWithEmailAndPassword(email, password)
@@ -73,9 +83,9 @@ const firebaseConfig = {
         db = () =>
             this.db
 
-        doAddItem = (item) => {
+        doAddItem = (item) => (
            this.db.collection('items').add(item)
-
+            
             //var itemKey = itemRef.key //ref can refer to a push(), but not push().set()
             //console.log("item key "+itemKey)
 
@@ -83,7 +93,7 @@ const firebaseConfig = {
             /*this.db.collection('users/' + uid +'/items').add({ 
                 item,
             })  */
-        }
+        )
 
         doEditItem = (editItem, itemID) => { //editItem is an object {itenName: ,color: ,}
           
@@ -166,3 +176,5 @@ const firebaseConfig = {
   }
 
   export default Firebase
+
+  

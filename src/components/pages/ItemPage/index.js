@@ -13,6 +13,7 @@ class ItemPageBase extends Component{
         this.state={
             loading: false,
             itemsList:[], //the list of items
+            fullList:[],
             error: null,
         }
     }
@@ -36,7 +37,7 @@ class ItemPageBase extends Component{
                     
                 })
 
-                this.setState({itemsList})
+                this.setState({itemsList: itemsList, fullList: itemsList})
             })
 
     }
@@ -46,14 +47,14 @@ class ItemPageBase extends Component{
     }
 
     render(){
-        const {itemsList} = this.state
+        const {itemsList, fullList} = this.state
 
         return(
             <div className="row">
                 {/*loading status, make sure to change componentdidmount too*/}
                 {/* TODO: <SearchBar /> */}
                 <div className="path"><p>path</p></div>
-                <Filter handleSearchResultsChange = {this.handleSearchResultsChange} itemsList={itemsList}/> {/*changes state in ItemPage*/}
+                <Filter handleSearchResultsChange = {this.handleSearchResultsChange} fullList={fullList}/> {/*changes state in ItemPage*/}
                 <div className="items-list">
                     <div className="category">
                         <h3>Category</h3>
@@ -101,3 +102,4 @@ const Item=(props)=>{
 const ItemPage = withFirebase(ItemPageBase)
 
 export default ItemPage
+export {ItemsList, Item }

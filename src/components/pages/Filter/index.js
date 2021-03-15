@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {compose} from 'recompose'
-import { withRouter} from 'react-router-dom'
+import { withRouter, Link} from 'react-router-dom'
 //must use withRouter in order to use this.props.history.push("/path")
 
 import {withFirebase} from '../../firebase'
@@ -36,37 +36,56 @@ class Filter extends Component{
     }
 
     updateItemsList = () => {
-        let itemsList = [];
+    
         let promises = [];
+        let temp = this.props.fullList;
+        console.log(temp)
 
         Object.entries(this.state).map(([spec, specObj]) =>{//for every spec and its specObj, loops through brands:{}, type:
-
             let querySpec =[];
 
+            //querySpec is an array that holds all of the specs want to query for,
+            //within a certain field, like brand or type
             Object.entries(specObj).map(([key,value]) => {
                 if(value) //if dress: true
                     querySpec.push(key)
-    
-                //querySpec is an array that holds all of the specs want to query for,
-                //within a certain field, like brand or type
             })
 
             //queries with filter arrays
             //where('brand', 'in', [costco, capezio, ...])
+            
+            let zeroList = [];
+
             if(querySpec.length > 0){
                 let promise = this.props.firebase.items().where(spec,'in', querySpec)
                 .get()
                 .then(snapshot => {
+                    
                     snapshot.forEach(doc=>{
                         if(doc.data().isListed){
-                            const found = itemsList.some(il => il.itemID === doc.id)
 
+                            const found = temp.some(il => il.itemID === doc.id);
+
+                            if(found){
+                                zeroList.push({itemID: doc.id, ...doc.data()})
+                            }
+
+                            console.log(temp)
+                            console.log(zeroList)
+
+                           /*  const found = itemsList.some(il => il.itemID === doc.id)
+
+                            
                             if(!found){
                                 itemsList.push({itemID: doc.id, ...doc.data()})
-                            } 
+                            }  */
                         } 
                     })
                 }) 
+                .then(()=>{
+                    temp = zeroList;
+                })
+                
                 promises.push(promise)  
             }}
         )// after everythings been looped through and filtitemsids is unique
@@ -74,7 +93,7 @@ class Filter extends Component{
         console.log('onSubmit state: ',this.state)
 
         Promise.all(promises).then(() => {
-            this.props.handleSearchResultsChange(itemsList)
+            this.props.handleSearchResultsChange(temp)
         })
     }
     /* onSubmit = (event) => { //happens everytime you click submit
@@ -154,26 +173,37 @@ class Filter extends Component{
                     {/* <button onClick={this.routeChange}> New Path (router test)</button> */}
                     <h5>type</h5>
                     <div className="selector">
-                        <label htmlFor="dress">dress</label>
                         <input className="type" type="checkbox" id="dress" name="dress" value="dress"  onClick={this.onClick("type")}/>
+                        <label htmlFor="dress">dress</label>
                     </div>
                     <div className="selector">
-                        <label htmlFor="bottom">bottom</label>
                         <input className="type" type="checkbox" id="bottom" name="bottom" value="bottom" onClick={this.onClick("type")}/>
+                        <label htmlFor="bottom">bottom</label>
                     </div>
                     <div className="selector">
-                        <label htmlFor="top">top</label>
                         <input className="type" type="checkbox" id="top" name="top" value="top" onClick={this.onClick("type")}/>
+                        <label htmlFor="top">top</label>
+                    </div>
+                    <div className="selector">
+                        <input className="type" type="checkbox" id="jumpsuit" name="jumpsuit" value="jumpsuit" onClick={this.onClick("type")}/>
+                        <label htmlFor="jumpsuit">jumpsuit</label>
                     </div>
                      
                     <h5>brand</h5>
                     <div className="selector">
-                        <label htmlFor="costco">costco</label>
                         <input type="checkbox" id="coscto" name="costco" value="costco" onClick={this.onClick("brand")}/>
+                        <label htmlFor="costco">costco</label>
                     </div>
                     <div className="selector">
-                        <label htmlFor="capezio">capezio</label>
                         <input type="checkbox" id="capezio" name="capezio" value="capezio" onClick={this.onClick("brand")}/>
+                        <label htmlFor="capezio">capezio</label>
+                    </div>
+                    <div className="selector">
+                        <input type="checkbox" id="kizzi" name="kizzi" value="kizzi" onClick={this.onClick("brand")}/>
+                        <label htmlFor="kizzi">kizzi</label>
+                    </div>
+                    <div>
+                        <Link to="/item-page?brand=costco">costco</Link>
                     </div>
                     {/* <button onClick={this.onSubmit}>Submit</button> */}
                 </form>
